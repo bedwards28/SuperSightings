@@ -16,7 +16,7 @@ public class Organization {
     
     private int organizationId;
     private String description;
-    private int locationId;
+    private Location location;
     private String phone;
     private String email;
     List<SuperBeing> members;
@@ -36,13 +36,13 @@ public class Organization {
     public void setDescription(String description) {
         this.description = description;
     }
-
-    public int getLocationId() {
-        return locationId;
+    
+    public Location getLocation() {
+        return location;
     }
-
-    public void setLocationId(int locationId) {
-        this.locationId = locationId;
+    
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
     public String getPhone() {
@@ -71,13 +71,13 @@ public class Organization {
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 97 * hash + this.organizationId;
-        hash = 97 * hash + Objects.hashCode(this.description);
-        hash = 97 * hash + this.locationId;
-        hash = 97 * hash + Objects.hashCode(this.phone);
-        hash = 97 * hash + Objects.hashCode(this.email);
-        hash = 97 * hash + Objects.hashCode(this.members);
+        int hash = 5;
+        hash = 29 * hash + this.organizationId;
+        hash = 29 * hash + Objects.hashCode(this.description);
+        hash = 29 * hash + Objects.hashCode(this.location);
+        hash = 29 * hash + Objects.hashCode(this.phone);
+        hash = 29 * hash + Objects.hashCode(this.email);
+        hash = 29 * hash + Objects.hashCode(this.members);
         return hash;
     }
 
@@ -96,9 +96,6 @@ public class Organization {
         if (this.organizationId != other.organizationId) {
             return false;
         }
-        if (this.locationId != other.locationId) {
-            return false;
-        }
         if (!Objects.equals(this.description, other.description)) {
             return false;
         }
@@ -106,6 +103,9 @@ public class Organization {
             return false;
         }
         if (!Objects.equals(this.email, other.email)) {
+            return false;
+        }
+        if (!Objects.equals(this.location, other.location)) {
             return false;
         }
         if (!Objects.equals(this.members, other.members)) {

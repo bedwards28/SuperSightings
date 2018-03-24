@@ -13,7 +13,7 @@ import java.util.Objects;
  */
 public class Location {
     
-    private int location_id;
+    private int locationId;
     private String name;
     private String description;
     private String addressLine1;
@@ -25,12 +25,12 @@ public class Location {
     private double latitude;
     private double longitude;
 
-    public int getLocation_id() {
-        return location_id;
+    public int getLocationId() {
+        return locationId;
     }
 
-    public void setLocation_id(int location_id) {
-        this.location_id = location_id;
+    public void setLocationId(int location_id) {
+        this.locationId = location_id;
     }
 
     public String getName() {
@@ -116,7 +116,7 @@ public class Location {
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 37 * hash + this.location_id;
+        hash = 37 * hash + this.locationId;
         hash = 37 * hash + Objects.hashCode(this.name);
         hash = 37 * hash + Objects.hashCode(this.description);
         hash = 37 * hash + Objects.hashCode(this.addressLine1);
@@ -142,7 +142,7 @@ public class Location {
             return false;
         }
         final Location other = (Location) obj;
-        if (this.location_id != other.location_id) {
+        if (this.locationId != other.locationId) {
             return false;
         }
         if (Double.doubleToLongBits(this.latitude) != Double.doubleToLongBits(other.latitude)) {

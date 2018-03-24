@@ -5,10 +5,13 @@
  */
 package com.sg.supersightings.dao;
 
+import com.sg.supersightings.model.Location;
+import com.sg.supersightings.model.Organization;
 import com.sg.supersightings.model.Power;
+import com.sg.supersightings.model.Sighting;
 import com.sg.supersightings.model.SuperBeing;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 /**
  *
@@ -16,7 +19,8 @@ import java.util.Map;
  */
 public interface SuperBeingDao {
     
-    public SuperBeing addSuperBeing(SuperBeing being);
+    // super_being methods
+    public void addSuperBeing(SuperBeing being);
     
     public SuperBeing deleteSuperBeing(int superId);
     
@@ -26,9 +30,12 @@ public interface SuperBeingDao {
     
     public List<SuperBeing> getAllSuperBeings();
     
+    public List<SuperBeing> getAllOrganizationMembers(int orgId);
+    
+    // power methods
     public Power addPower(Power power);
     
-    public Power deletePower(int powerId);
+    public void deletePower(int powerId);
     
     public Power updatePower(Power power);
     
@@ -38,16 +45,43 @@ public interface SuperBeingDao {
     
     public List<Power> getAllPowers();
     
-//    public void addSuperBeingPower(int superId, int powerId);
+    // location methods
+    public void addLocation(Location location);
     
-    public void addSuperBeingPowers(SuperBeing superBeing);
+    public void deleteLocationById(int locationId);
     
-    public List<Power> getAllPowersBySuperId(int superId);
+    public void updateLocation(Location location);
     
-    public List<Integer> getAllSuperIdsWithPowers();
+    public Location getLocationById(int locationId);
     
-//    public void updateSuperBeingPowers(SuperBeing superBeing);
+    public List<Location> getAllLocations();
     
-    public void deleteSuperBeingPowersBySuperId(int superId);
+    public List<Location> getAllLocationsBySuperId(int superId);
+    
+    // sighting methods
+    public void addSighting(Sighting sighting);
+    
+    public void deleteSighting(int sightingId);
+    
+    public void updateSighting(Sighting sighting);
+    
+    public Sighting getSightingById(int sightingId);
+
+    public List<Sighting> getAllSightings();
+    
+    public List<Sighting> getAllSightingsByDate(LocalDate date);
+    
+    // organization methods
+    public void addOrganization(Organization org);
+    
+    public void deleteOrganization(int orgId);
+    
+    public void updateOrganization(Organization org);
+    
+    public Organization getOrganizationById(int orgId);
+    
+    public List<Organization> getAllOrganizations();
+    
+    public List<Organization> getAllOrganizationsBySuperId(int superId);
     
 }

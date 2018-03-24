@@ -16,17 +16,13 @@
 
     <tx:annotation-driven />
     
-    <context:component-scan base-package="com.sg.supersightings.dao" />
+    <context:component-scan base-package="com.sg.supersightings" />
     <!-- Bean definitions go here -->
     
-    <bean id="superBeingDao" 
+<!--    <bean id="superBeingDao" 
           class="com.sg.supersightings.dao.SuperBeingDaoDbImpl">
         <property name="jdbcTemplate" ref="jdbcTemplate" />
-    </beans>
-    
-    <bean id="powerDao" class="com.sg.supersightings.dao.PowerDaoDbImpl">
-        <propproperty name="jdbcTemplate" ref="jdbcTemplate" />
-    </bean>
+    </bean>-->
     
     <bean id="dataSource"
           class="org.apache.commons.dbcp2.BasicDataSource">

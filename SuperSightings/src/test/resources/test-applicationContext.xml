@@ -24,9 +24,9 @@
         <property name="jdbcTemplate" ref="jdbcTemplate" />
     </bean>
     
-    <bean id="powerDao" class="com.sg.supersightings.dao.PowerDaoDbImpl">
+<!--    <bean id="powerDao" class="com.sg.supersightings.dao.PowerDaoDbImpl">
         <property name="jdbcTemplate" ref="jdbcTemplate" />
-    </bean>
+    </bean>-->
     
     <bean id="dataSource"
           class="org.apache.commons.dbcp2.BasicDataSource">
