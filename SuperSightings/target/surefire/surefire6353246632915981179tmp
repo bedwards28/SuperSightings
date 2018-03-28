@@ -1,7 +1,8 @@
 #surefire
-#Sat Mar 24 10:34:56 CDT 2018
+#Mon Mar 26 20:49:54 CDT 2018
 enableAssertions=true
 testSuiteDefinitionTestSourceDirectory=C\:\\Users\\blake\\OneDrive\\Documents\\NetBeansProjects\\SuperSightings\\src\\test\\java
+requestedTest=com.sg.supersightings.dao.SuperBeingDaoTest
 surefireClassPathUrl.1=C\:\\Users\\blake\\.m2\\repository\\org\\apache\\maven\\surefire\\surefire-api\\2.10\\surefire-api-2.10.jar
 surefireClassPathUrl.0=C\:\\Users\\blake\\.m2\\repository\\org\\apache\\maven\\surefire\\surefire-junit4\\2.10\\surefire-junit4-2.10.jar
 classPathUrl.9=C\:\\Users\\blake\\.m2\\repository\\org\\springframework\\spring-jdbc\\4.3.6.RELEASE\\spring-jdbc-4.3.6.RELEASE.jar
@@ -27,14 +28,12 @@ reportsDirectory=C\:\\Users\\blake\\OneDrive\\Documents\\NetBeansProjects\\Super
 classPathUrl.23=C\:\\Users\\blake\\.m2\\repository\\com\\fasterxml\\jackson\\core\\jackson-core\\2.6.3\\jackson-core-2.6.3.jar
 classPathUrl.22=C\:\\Users\\blake\\.m2\\repository\\com\\fasterxml\\jackson\\core\\jackson-annotations\\2.6.0\\jackson-annotations-2.6.0.jar
 classPathUrl.21=C\:\\Users\\blake\\.m2\\repository\\com\\fasterxml\\jackson\\core\\jackson-databind\\2.6.3\\jackson-databind-2.6.3.jar
-includes2=**/*TestCase.java
 classPathUrl.20=C\:\\Users\\blake\\.m2\\repository\\javax\\validation\\validation-api\\1.1.0.Final\\validation-api-1.1.0.Final.jar
-includes1=**/*Test.java
-includes0=**/Test*.java
-excludes0=**/*$*
-failIfNoTests=false
+includes0=**/com/sg/supersightings/dao/SuperBeingDaoTest.java
+failIfNoTests=true
 useManifestOnlyJar=true
 testClassesDirectory=C\:\\Users\\blake\\OneDrive\\Documents\\NetBeansProjects\\SuperSightings\\target\\test-classes
+requestedTestMethod=testUpdateSuperBeing
 classPathUrl.19=C\:\\Users\\blake\\.m2\\repository\\javax\\servlet\\jstl\\1.2\\jstl-1.2.jar
 classPathUrl.18=C\:\\Users\\blake\\.m2\\repository\\javax\\inject\\javax.inject\\1\\javax.inject-1.jar
 classPathUrl.17=C\:\\Users\\blake\\.m2\\repository\\javax\\servlet\\javax.servlet-api\\3.1.0\\javax.servlet-api-3.1.0.jar

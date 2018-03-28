@@ -6,6 +6,8 @@
 package com.sg.supersightings.model;
 
 import java.util.Objects;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotEmpty;
 
 /**
  *
@@ -14,15 +16,34 @@ import java.util.Objects;
 public class Location {
     
     private int locationId;
+    @NotEmpty(message = "Please enter a name for this location.")
+    @Length(max = 45, message = "The location name cannot exceed 45 characters.")
     private String name;
+    @NotEmpty(message = "Please enter a description for this location.")
+    @Length(max = 100, message = "The description cannot exceed 100 characters.")
     private String description;
+    @NotEmpty(message = "Please enter an address for this location.")
+    @Length(max = 45, message = "Address Line 1 cannot exceed 45 characters.")
     private String addressLine1;
+    @Length(max = 45, message = "Address Line 2 cannot exceed 45 characters.")
     private String addressLine2;
+    @NotEmpty(message = "Please enter a city for this location.")
+    @Length(max = 45, message = "The city cannot exceed 45 characters.")
     private String city;
+    @NotEmpty(message = "Please enter a state/region for this location.")
+    @Length(max = 25, message = "The region cannot exceed 25 characters.")
     private String region;
+    @NotEmpty(message = "Please enter a postal code for this location.")
+    @Length(max = 20, message = "The postal code cannot exceed 20 characters.")
     private String postalCode;
+    @NotEmpty(message = "Please enter a country for this location.")
+    @Length(max = 45, message = "The country cannot exceed 45 characters.")
     private String country;
+    @NotEmpty(message = "Please enter the latitude for this location.")
+    @Length(max = 9, message = "Latitude cannot exceed 9 characters.")
     private double latitude;
+    @NotEmpty(message = "Please enter the longitude for this location.")
+    @Length(max = 9, message = "Longitude cannot exceed 9 characters.")
     private double longitude;
 
     public int getLocationId() {

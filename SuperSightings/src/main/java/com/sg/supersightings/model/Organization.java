@@ -7,6 +7,9 @@ package com.sg.supersightings.model;
 
 import java.util.List;
 import java.util.Objects;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotEmpty;
 
 /**
  *
@@ -15,9 +18,15 @@ import java.util.Objects;
 public class Organization {
     
     private int organizationId;
+    @NotEmpty(message = "Please enter a name for the organization.")
+    @Length(max = 45, message = "The organization name cannot exceed 45 characters.")
     private String description;
     private Location location;
+    @NotEmpty(message = "Please enter a phone number for the organization.")
+    @Length(max = 20, message = "The phone number cannot exceed 20 characters.")
     private String phone;
+    @Email(message = "Please enter a valid email address.")
+    @Length(max = 100, message = "The email cannot exceed 100 characters.")
     private String email;
     List<SuperBeing> members;
 

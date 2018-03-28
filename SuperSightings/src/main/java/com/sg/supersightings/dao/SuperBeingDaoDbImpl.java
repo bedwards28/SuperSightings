@@ -297,9 +297,17 @@ public class SuperBeingDaoDbImpl implements SuperBeingDao {
                 being.getIdentity(),
                 being.getSuperId());
 
-        for (Power currentPower : being.getPowers()) {
-            updatePower(currentPower);
-        }
+//        for (Power currentPower : being.getPowers()) {
+//            updatePower(currentPower);
+//        }
+
+        insertPowers(being);
+
+        // delete super_being_power entries
+        deleteSuperBeingPowersBySuperId(being.getSuperId());
+        
+        // recreate super_being_power entries
+        insertSuperBeingPowers(being);
 
         return being;
     }
@@ -316,6 +324,8 @@ public class SuperBeingDaoDbImpl implements SuperBeingDao {
 
             return beings;
         } catch (DataAccessException e) {
+            return null;
+        } catch (NullPointerException e) {
             return null;
         }
     }
@@ -344,13 +354,27 @@ public class SuperBeingDaoDbImpl implements SuperBeingDao {
     @Override
     @Transactional
     public Power addPower(Power power) {
-        jt.update(INSERT_POWER, power.getDescription());
+        Power fromDb = new Power();
+        
+        try {
+            fromDb = jt.queryForObject(SELECT_POWER_BY_DESCRIPTION, 
+                new PowerMapper(), 
+                power.getDescription());
+        } catch (DataAccessException e) {
+            fromDb = null;
+        }
+        
+        
+        if (fromDb == null) {
+            jt.update(INSERT_POWER, power.getDescription());
 
-        int powerId
-                = jt.queryForObject("select LAST_INSERT_ID()", Integer.class);
+            int powerId
+                    = jt.queryForObject("select LAST_INSERT_ID()", Integer.class);
 
-        power.setPowerId(powerId);
-
+            power.setPowerId(powerId);
+        } else {
+            power.setPowerId(fromDb.getPowerId());
+        }
         return power;
     }
 
@@ -628,10 +652,12 @@ public class SuperBeingDaoDbImpl implements SuperBeingDao {
     private void insertOrganizationMembers(Organization o) {
         List<SuperBeing> members = o.getMembers();
 
-        for (SuperBeing currentMember : members) {
-            jt.update(INSERT_ORG_MEMBER,
-                    o.getOrganizationId(),
-                    currentMember.getSuperId());
+        if (members != null) {
+            for (SuperBeing currentMember : members) {
+                jt.update(INSERT_ORG_MEMBER,
+                        o.getOrganizationId(),
+                        currentMember.getSuperId());
+            }
         }
     }
 

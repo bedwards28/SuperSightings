@@ -1,4 +1,19 @@
-//$(document).ready(function() {
+function validateLocationForm() {
+    
+    
+    if (document.forms["locationForm"]["name"].value == "")
+    {
+        alert("Please provide your name!");
+        document.myForm.name.focus();
+        return false;
+    }
+
+    return true;
+}
+
+
+//
+////$(document).ready(function() {
 //    loadNewsFeed();
 //    
 //    

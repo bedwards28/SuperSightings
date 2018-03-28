@@ -7,6 +7,8 @@ package com.sg.supersightings.model;
 
 import java.util.List;
 import java.util.Objects;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotEmpty;
 
 /**
  *
@@ -15,8 +17,13 @@ import java.util.Objects;
 public class SuperBeing {
     
     private int superId;
+    @NotEmpty(message = "Please enter a name for the Super Hero/Villain.")
+    @Length(max = 45, message = "Name cannot exceed 45 characters in length.")
     private String name;
+    @NotEmpty(message = "Please enter a description for the Super Hero/Villain.")
+    @Length(max = 500, message = "Description cannot exceed 500 characters in length.")
     private String description;
+    @Length(max = 45, message = "Identity cannot exceed 45 characters in length.")
     private String identity;
     private List<Power> powers;
 

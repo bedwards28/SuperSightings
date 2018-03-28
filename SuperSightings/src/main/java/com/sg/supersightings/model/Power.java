@@ -6,6 +6,8 @@
 package com.sg.supersightings.model;
 
 import java.util.Objects;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotEmpty;
 
 /**
  *
@@ -14,7 +16,16 @@ import java.util.Objects;
 public class Power {
     
     private int powerId;
+    @NotEmpty(message = "Please provide a description for the power.")
+    @Length(max = 45, message = "The description cannot exceed 45 characters in length.")
     private String description;
+
+    public Power() {
+    }
+
+    public Power(String description) {
+        this.description = description;
+    }
 
     public int getPowerId() {
         return powerId;

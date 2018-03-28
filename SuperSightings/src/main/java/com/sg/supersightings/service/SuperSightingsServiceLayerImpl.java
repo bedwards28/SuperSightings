@@ -20,11 +20,13 @@ import org.springframework.stereotype.Component;
  *
  * @author blake
  */
-@Component
 public class SuperSightingsServiceLayerImpl implements SuperSightingsServiceLayer {
     
-    @Inject
     private SuperBeingDao dao;
+
+    public void setSuperBeingDao(SuperBeingDao dao) {
+        this.dao = dao;
+    }
 
     @Override
     public void addSuperBeing(SuperBeing being) {
