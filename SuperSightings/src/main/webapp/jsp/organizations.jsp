@@ -1,13 +1,15 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="s" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="sf" uri="http://www.springframework.org/tags/form"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
     <head>
         <title>Super Sightings</title>
         <!-- Bootstrap core CSS -->
-        <link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet">        
+        <link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet">  
+        <link href="${pageContext.request.contextPath}/css/supersightings.css" rel="stylesheet">
     </head>
     <body>
         <div class="container">
@@ -38,7 +40,7 @@
                             <tr>
                                 <td>
                                     <a href="organizationDetails?organizationId=${currentOrg.organizationId}">
-                                        <c:out value="${currentOrg.description}"/>
+                                        <c:out value="${currentOrg.name}"/>
                                     </a>
                                 </td>
                                 <td>
@@ -61,86 +63,76 @@
                 
                 <div class="col-md-6">
                     <h2>Add Organization</h2>
-                    <form class="form-horizontal" role="form" method="POST" action="createOrganization">
+                    <sf:form class="form-horizontal" role="form" method="POST" 
+                             modelAttribute="organization" action="createOrganization">
+                        
                         <div class="form-group">
-                            <label for="add-organization-name" class="col-md-4 control-label">Name:</label>
+                            <label for="select-loctation" class="col-md-4 control-label">Select a location:</label>
                             <div class="col-md-8">
-                                <input type="text" class="form-control" name="name" placeholder="Organization Name"/>
+                                <select class="form-control" id="select-location" name="select-location" required>
+                                    <c:forEach var="currentLocation" items="${locationList}">
+                                        <c:choose>
+                                            <c:when test="${organization.location.locationId == currentLocation.locationId}">
+                                                <option value="${currentLocation.locationId}" selected>${currentLocation.name}</option>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <option value="${currentLocation.locationId}">${currentLocation.name}</option>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </c:forEach>
+                                </select>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="add-description" class="col-md-4 control-label">Description:</label>
+                            <label for="add-name" class="col-md-4 control-label">Organization Name:</label>
                             <div class="col-md-8">
-                                <textarea rows="3" cols="46" class="form-control" name="description" placeholder="Description">
-                                </textarea>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="add-address-line-1" class="col-md-4 control-label">Address Line 1:</label>
-                            <div class="col-md-8">
-                                <input type="text" class="form-control" name="addressLine1" placeholder="Address Line 1" />
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="add-address-line-2" class="col-md-4 control-label">Address Line 2:</label>
-                            <div class="col-md-8">
-                                <input type="text" class="form-control" name="addressLine2" placeholder="Address Line 2" />
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="add-city" class="col-md-4 control-label">City:</label>
-                            <div class="col-md-8">
-                                <input type="text" class="form-control" name="city" placeholder="City" />
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="add-region" class="col-md-4 control-label">Region:</label>
-                            <div class="col-md-8">
-                                <input type="text" class="form-control" name="region" placeholder="Region" />
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="add-postal-code" class="col-md-4 control-label">Postal Code:</label>
-                            <div class="col-md-8">
-                                <input type="text" class="form-control" name="postalCode" placeholder="Postal Code" />
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="add-country" class="col-md-4 control-label">Country:</label>
-                            <div class="col-md-8">
-                                <input type="text" class="form-control" name="country" placeholder="Country" />
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="add-latitude" class="col-md-4 control-label">Latitude:</label>
-                            <div class="col-md-8">
-                                <input type="number" max="180" step=".0001" class="form-control" name="latitude" placeholder="Latitude" />
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="add-longitude" class="col-md-4 control-label">Longitude:</label>
-                            <div class="col-md-8">
-                                <input type="number" max="180" step=".0001" class="form-control" name="longitude" placeholder="Longitude" />
+                                <sf:input type="text" class="form-control" name="name" path="name" placeholder="Name" />
+                                <sf:errors path="name" cssClass="error"></sf:errors>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="add-phone" class="col-md-4 control-label">Phone:</label>
                             <div class="col-md-8">
-                                <input type="text" class="form-control" name="phone" placeholder="Phone" />
+                            <sf:input type="tel" minlength="12" maxlength="20" class="form-control" name="phone" path="phone" placeholder="123-456-7890" />
+                                <sf:errors path="phone" cssClass="error"></sf:errors>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="add-email" class="col-md-4 control-label">Email:</label>
                             <div class="col-md-8">
-                                <input type="text" class="form-control" name="email" placeholder="Email" />
+                                <sf:input type="email" class="form-control" name="email" path="email" placeholder="JohnDoe@example.com" />
+                                <sf:errors path="email" cssClass="error"></sf:errors>
                             </div>
                         </div>
                         <div class="form-group">
-                            <div class="col-md-offset-4 col-md-8">
-                                <input type="submit" class="btn btn-primary" value="Create Organization"/>
+                            <label for="add-members" class="col-md-4 control-label">Members:</label>
+                            <div class="col-md-8">
+                                <fieldset class="membersCheckbox">
+                                    <c:forEach var="currentSuper" items="${superList}">
+                                        <div class="form-control">
+                                            <c:choose>
+                                                <c:when test="${organization.members.contains(currentSuper)}">
+                                                    <input type="checkbox" name="memberIds" value="${currentSuper.superId}" checked/>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <input type="checkbox" name="memberIds" value="${currentSuper.superId}" />
+                                                </c:otherwise>
+                                            </c:choose>
+                                            <label>${currentSuper.name}</label>
+                                        </div>
+                                    </c:forEach>
+                                </fieldset>
                             </div>
                         </div>
-                    </form>
+                        <div class="form-group">
+                            <div class="col-md-offset-4 col-md-4">
+                                <input type="submit" class="btn btn-primary" value="Create Organization"/>
+                            </div>
+                            <div class="col-md-4">
+                                <a href="addLocationForm"><input type="button" class="btn btn-primary" value="Add Location" /><a>
+                            </div>
+                        </div>
+                    </sf:form>
                 </div>
             </div>
 

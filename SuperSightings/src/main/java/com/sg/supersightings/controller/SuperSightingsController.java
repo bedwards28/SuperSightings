@@ -6,6 +6,8 @@ import com.sg.supersightings.model.Power;
 import com.sg.supersightings.model.Sighting;
 import com.sg.supersightings.model.SuperBeing;
 import com.sg.supersightings.service.SuperSightingsServiceLayer;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 //@CrossOrigin
 //@RestController
@@ -152,7 +155,14 @@ public class SuperSightingsController {
     @GetMapping("/organizations")
     public String displayOrganizationsPage(Model model) {
         List<Organization> orgList = service.getAllOrganizations();
+        List<Location> locationList = service.getAllLocations();
+        List<SuperBeing> superList = service.getAllSuperBeings();
+        Organization organization = new Organization();
+
         model.addAttribute("orgList", orgList);
+        model.addAttribute("locationList", locationList);
+        model.addAttribute("superList", superList);
+        model.addAttribute("organization", organization);
         return "organizations";
     }
 
@@ -171,35 +181,43 @@ public class SuperSightingsController {
     }
 
     @PostMapping("/createOrganization")
-    public String createOrganization(HttpServletRequest request) {
-        Organization org = new Organization();
-        Location loc = new Location();
+    public String createOrganization(
+            @Valid @ModelAttribute("organization") Organization organization,
+            BindingResult result,
+            @RequestParam("select-location") int locationId,
+            @RequestParam(value = "memberIds", required = false) List<String> memberIdList,
+            Model model) {
 
-        loc.setName(request.getParameter("name"));
-        loc.setDescription(request.getParameter("description"));
-        loc.setAddressLine1(request.getParameter("addressLine1"));
-        loc.setAddressLine2(request.getParameter("addressLine2"));
-        loc.setCity(request.getParameter("city"));
-        loc.setRegion(request.getParameter("region"));
-        loc.setPostalCode(request.getParameter("postalCode"));
-        loc.setCountry(request.getParameter("country"));
+        // Insert location into organization
+        Location location = service.getLocationById(locationId);
+        organization.setLocation(location);
 
-        String latitudeParameter = request.getParameter("latitude");
-        Double latitude = Double.parseDouble(latitudeParameter);
-        loc.setLatitude(latitude);
+        // Insert members into organization
+        List<SuperBeing> members = new ArrayList<>();
 
-        String longitudeParameter = request.getParameter("longitude");
-        Double longitude = Double.parseDouble(longitudeParameter);
-        loc.setLongitude(longitude);
+        if (memberIdList != null) {
+            for (String currentIdString : memberIdList) {
+                int currentId = Integer.parseInt(currentIdString);
+                SuperBeing sb = service.getSuperBeingById(currentId);
+                members.add(sb);
+            }
+        }
 
-        service.addLocation(loc);
+        organization.setMembers(members);
 
-        org.setDescription(request.getParameter("description"));
-        org.setLocation(loc);
-        org.setPhone(request.getParameter("phone"));
-        org.setEmail(request.getParameter("email"));
+        if (result.hasErrors()) {
+            List<Organization> orgList = service.getAllOrganizations();
+            List<Location> locationList = service.getAllLocations();
+            List<SuperBeing> superList = service.getAllSuperBeings();
 
-        service.addOrganization(org);
+            model.addAttribute("orgList", orgList);
+            model.addAttribute("locationList", locationList);
+            model.addAttribute("superList", superList);
+            model.addAttribute("organization", organization);
+            return "organizations";
+        }
+
+        service.addOrganization(organization);
 
         return "redirect:organizations";
     }
@@ -209,6 +227,65 @@ public class SuperSightingsController {
         String organizationIdParameter = request.getParameter("organizationId");
         int organizationId = Integer.parseInt(organizationIdParameter);
         service.deleteOrganization(organizationId);
+        return "redirect:organizations";
+    }
+
+    @GetMapping("/editOrganizationForm")
+    public String displayEditOrganizationForm(
+            HttpServletRequest request, Model model) {
+        
+        String organizationIdParamter = request.getParameter("organizationId");
+        int organizationId = Integer.parseInt(organizationIdParamter);
+        Organization organization = service.getOrganizationById(organizationId);
+        
+        List<Location> locationList = service.getAllLocations();
+        List<SuperBeing> superList = service.getAllSuperBeings();
+        
+        model.addAttribute("superList", superList);
+        model.addAttribute("locationList", locationList);
+        model.addAttribute("organization", organization);
+        return "editOrganizationForm";
+    }
+    
+    @PostMapping("/editOrganization")
+    public String editOrganization(
+            @Valid @ModelAttribute("organization") Organization organization, 
+            BindingResult result, 
+            @RequestParam("select-location") int locationId,
+            @RequestParam(value = "memberIds", required = false) List<String> memberIdList,
+            Model model) {
+        
+        // Insert location into organization
+        Location location = service.getLocationById(locationId);
+        organization.setLocation(location);
+
+        // Insert members into organization
+        List<SuperBeing> members = new ArrayList<>();
+
+        if (memberIdList != null) {
+            for (String currentIdString : memberIdList) {
+                int currentId = Integer.parseInt(currentIdString);
+                SuperBeing sb = service.getSuperBeingById(currentId);
+                members.add(sb);
+            }
+        }
+
+        organization.setMembers(members);
+
+        if (result.hasErrors()) {
+            List<Organization> orgList = service.getAllOrganizations();
+            List<Location> locationList = service.getAllLocations();
+            List<SuperBeing> superList = service.getAllSuperBeings();
+
+            model.addAttribute("orgList", orgList);
+            model.addAttribute("locationList", locationList);
+            model.addAttribute("superList", superList);
+            model.addAttribute("organization", organization);
+            return "editOrganizationForm";
+        }
+        
+        service.updateOrganization(organization);
+        
         return "redirect:organizations";
     }
 
@@ -236,24 +313,15 @@ public class SuperSightingsController {
     }
 
     @PostMapping("/createLocation")
-    public String createLocation(HttpServletRequest request) {
-        Location location = new Location();
-        location.setName(request.getParameter("name"));
-        location.setDescription(request.getParameter("description"));
-        location.setAddressLine1(request.getParameter("addressLine1"));
-        location.setAddressLine2(request.getParameter("addressLine2"));
-        location.setCity(request.getParameter("city"));
-        location.setRegion(request.getParameter("region"));
-        location.setPostalCode(request.getParameter("postalCode"));
-        location.setCountry(request.getParameter("country"));
+    public String createLocation(
+            @Valid @ModelAttribute("location") Location location,
+            BindingResult result,
+            Model model) {
 
-        String latitudeParameter = request.getParameter("latitude");
-        Double latitude = Double.parseDouble(latitudeParameter);
-        location.setLatitude(latitude);
-
-        String longitudeParameter = request.getParameter("longitude");
-        Double longitude = Double.parseDouble(longitudeParameter);
-        location.setLongitude(longitude);
+        if (result.hasErrors()) {
+            model.addAttribute("locationList", service.getAllLocations());
+            return "locations";
+        }
 
         service.addLocation(location);
 
@@ -268,10 +336,41 @@ public class SuperSightingsController {
         return "redirect:locations";
     }
 
+    @GetMapping("/editLocationForm")
+    public String displayEditLocationForm(
+            HttpServletRequest request, Model model) {
+
+        String locationIdParameter = request.getParameter("locationId");
+        int locationId = Integer.parseInt(locationIdParameter);
+        Location location = service.getLocationById(locationId);
+        model.addAttribute("location", location);
+        return "editLocationForm";
+    }
+
+    @PostMapping("/editLocation")
+    public String editLocation(
+            @Valid @ModelAttribute("location") Location location,
+            BindingResult result,
+            Model model) {
+
+        if (result.hasErrors()) {
+            model.addAttribute("location", location);
+            return "editLocationForm";
+        }
+
+        service.updateLocation(location);
+
+        return "redirect:locations";
+    }
+
     @GetMapping("/sightings")
     public String displaySightingsPage(Model model) {
         List<Sighting> sightingList = service.getAllSightings();
+        List<SuperBeing> superList = service.getAllSuperBeings();
+        List<Location> locationList = service.getAllLocations();
         model.addAttribute("sightingList", sightingList);
+        model.addAttribute("superList", superList);
+        model.addAttribute("locationList", locationList);
         return "sightings";
     }
 
@@ -282,6 +381,94 @@ public class SuperSightingsController {
         Sighting sighting = service.getSightingById(sightingId);
         model.addAttribute("sighting", sighting);
         return "sightingDetails";
+    }
+    
+    @PostMapping("/createSighting")
+    public String createSighting(
+            @RequestParam("select-location") int locationId,
+            @RequestParam(value = "superIds", required = false) List<String> superIdList,
+            @RequestParam("date") String date,
+            Model model) {
+        
+        Sighting sighting = new Sighting();
+        
+        // Insert location into sighting
+        Location location = service.getLocationById(locationId);
+        sighting.setLocation(location);
+        
+        // Insert members into organization
+        List<SuperBeing> supers = new ArrayList<>();
+
+        if (superIdList != null) {
+            for (String currentIdString : superIdList) {
+                int currentId = Integer.parseInt(currentIdString);
+                SuperBeing sb = service.getSuperBeingById(currentId);
+                supers.add(sb);
+            }
+        }
+        
+        sighting.setSuperBeings(supers);
+        
+        LocalDate newDate = LocalDate.parse(date);
+        
+        sighting.setDate(newDate);
+        
+        service.addSighting(sighting);
+        
+        return "redirect:sightings";
+    }
+    
+    @GetMapping("/deleteSighting")
+    public String deleteSighting(@RequestParam("sightingId") int id) {
+        service.deleteSighting(id);
+        return "redirect:sightings";
+    }
+    
+    @GetMapping("/editSightingForm")
+    public String displayEditSightingForm(
+            @RequestParam("sightingId") int id, 
+            Model model) {
+        
+        Sighting sighting = service.getSightingById(id);
+        List<Location> locationList = service.getAllLocations();
+        List<SuperBeing> superList = service.getAllSuperBeings();
+        model.addAttribute("sighting", sighting);
+        model.addAttribute("locationList", locationList);
+        model.addAttribute("superList", superList);
+        return "editSightingForm";
+    }
+    
+    @PostMapping("/editSighting")
+    public String editSighting(
+            @RequestParam("sightingId") int sightingId,
+            @RequestParam("select-location") int locationId,
+            @RequestParam(value = "superIds", required = false) List<String> superIdList,
+            @RequestParam("date") String date,
+            Model model) {
+        
+        Sighting sighting = new Sighting();
+        
+        sighting.setSightingId(sightingId);
+        
+        Location location = service.getLocationById(locationId);
+        sighting.setLocation(location);
+        
+        List<SuperBeing> supers = new ArrayList<>();
+        if (superIdList != null) {
+            for (String currentIdString : superIdList) {
+                int currentId = Integer.parseInt(currentIdString);
+                SuperBeing sb = service.getSuperBeingById(currentId);
+                supers.add(sb);
+            }
+        }
+        sighting.setSuperBeings(supers);
+        
+        LocalDate newDate = LocalDate.parse(date);
+        sighting.setDate(newDate);
+        
+        service.updateSighting(sighting);
+        
+        return "redirect:sightings";
     }
 
     @GetMapping("/addPowerForm")

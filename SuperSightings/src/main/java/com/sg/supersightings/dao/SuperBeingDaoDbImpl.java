@@ -153,7 +153,7 @@ public class SuperBeingDaoDbImpl implements SuperBeingDao {
     private static final String INSERT_SUPER_BEING_SIGHTING
             = "insert into super_being_sighting (super_id, sighting_id) "
             + "values (?, ?)";
-//    
+    
     private static final String DELETE_ALL_SUPER_SIGHTINGS_BY_SIGHTING_ID
             = "delete from super_being_sighting where sighting_id = ?";
 
@@ -163,14 +163,14 @@ public class SuperBeingDaoDbImpl implements SuperBeingDao {
             + "where sighting_id = ?";
 
     private static final String INSERT_ORGANIZATION
-            = "insert into organization (description, location_id, phone, email) "
+            = "insert into organization (name, location_id, phone, email) "
             + "values (?, ?, ?, ?)";
 
     private static final String DELETE_ORGANIZATION
             = "delete from organization where organization_id = ?";
 
     private static final String UPDATE_ORGANIZATION
-            = "update organization set description = ?, location_id = ?, "
+            = "update organization set name = ?, location_id = ?, "
             + "phone = ?, email = ? "
             + "where organization_id = ?";
 
@@ -297,10 +297,6 @@ public class SuperBeingDaoDbImpl implements SuperBeingDao {
                 being.getIdentity(),
                 being.getSuperId());
 
-//        for (Power currentPower : being.getPowers()) {
-//            updatePower(currentPower);
-//        }
-
         insertPowers(being);
 
         // delete super_being_power entries
@@ -313,6 +309,7 @@ public class SuperBeingDaoDbImpl implements SuperBeingDao {
     }
 
     @Override
+    @Transactional
     public List<SuperBeing> getAllSuperBeings() {
         try {
             List<SuperBeing> beings
@@ -331,6 +328,7 @@ public class SuperBeingDaoDbImpl implements SuperBeingDao {
     }
 
     @Override
+    @Transactional
     public List<SuperBeing> getAllOrganizationMembers(int orgId) {
         try {
             List<SuperBeing> beings = new ArrayList<>();
@@ -434,6 +432,7 @@ public class SuperBeingDaoDbImpl implements SuperBeingDao {
     }
 
     @Override
+    @Transactional
     public void addLocation(Location loc) {
         jt.update(INSERT_LOCATION,
                 loc.getName(),
@@ -502,6 +501,7 @@ public class SuperBeingDaoDbImpl implements SuperBeingDao {
     }
 
     @Override
+    @Transactional
     public void addSighting(Sighting sighting) {
         jt.update(INSERT_SIGHTING,
                 sighting.getLocation().getLocationId(),
@@ -526,6 +526,7 @@ public class SuperBeingDaoDbImpl implements SuperBeingDao {
     }
 
     @Override
+    @Transactional
     public void deleteSighting(int sightingId) {
         try {
             // delete super_being_sighting enries
@@ -539,7 +540,9 @@ public class SuperBeingDaoDbImpl implements SuperBeingDao {
     }
 
     @Override
+    @Transactional
     public void updateSighting(Sighting s) {
+        String str = s.getDate().toString();
         jt.update(UPDATE_SIGHTING,
                 s.getDate().toString(),
                 s.getLocation().getLocationId(),
@@ -554,6 +557,7 @@ public class SuperBeingDaoDbImpl implements SuperBeingDao {
     }
 
     @Override
+    @Transactional
     public Sighting getSightingById(int sightingId) {
         try {
             Sighting s = jt.queryForObject(SELECT_SIGHTING_BY_ID,
@@ -573,6 +577,7 @@ public class SuperBeingDaoDbImpl implements SuperBeingDao {
     }
 
     @Override
+    @Transactional
     public List<Sighting> getAllSightings() {
         try {
             List<Sighting> sightings
@@ -592,6 +597,7 @@ public class SuperBeingDaoDbImpl implements SuperBeingDao {
     }
 
     @Override
+    @Transactional
     public List<Sighting> getAllSightingsByDate(LocalDate date) {
         try {
             List<Sighting> sightings = jt.query(
@@ -634,9 +640,10 @@ public class SuperBeingDaoDbImpl implements SuperBeingDao {
     }
 
     @Override
+    @Transactional
     public void addOrganization(Organization org) {
         jt.update(INSERT_ORGANIZATION,
-                org.getDescription(),
+                org.getName(),
                 org.getLocation().getLocationId(),
                 org.getPhone(),
                 org.getEmail());
@@ -662,6 +669,7 @@ public class SuperBeingDaoDbImpl implements SuperBeingDao {
     }
 
     @Override
+    @Transactional
     public void deleteOrganization(int orgId) {
         // delete organization_members entries
         jt.update(DELETE_ORG_MEMBERS_BY_ORG_ID, orgId);
@@ -671,9 +679,10 @@ public class SuperBeingDaoDbImpl implements SuperBeingDao {
     }
 
     @Override
+    @Transactional
     public void updateOrganization(Organization org) {
         jt.update(UPDATE_ORGANIZATION,
-                org.getDescription(),
+                org.getName(),
                 org.getLocation().getLocationId(),
                 org.getPhone(),
                 org.getEmail(),
@@ -687,6 +696,7 @@ public class SuperBeingDaoDbImpl implements SuperBeingDao {
     }
 
     @Override
+    @Transactional
     public Organization getOrganizationById(int orgId) {
         try {
             Organization org = jt.queryForObject(
@@ -706,6 +716,7 @@ public class SuperBeingDaoDbImpl implements SuperBeingDao {
     }
 
     @Override
+    @Transactional
     public List<Organization> getAllOrganizations() {
         try {
             List<Organization> orgs
@@ -724,6 +735,7 @@ public class SuperBeingDaoDbImpl implements SuperBeingDao {
     }
 
     @Override
+    @Transactional
     public List<Organization> getAllOrganizationsBySuperId(int superId) {
         try {
             List<Organization> orgs = new ArrayList<>();
@@ -824,7 +836,7 @@ public class SuperBeingDaoDbImpl implements SuperBeingDao {
         public Organization mapRow(ResultSet rs, int i) throws SQLException {
             Organization org = new Organization();
             org.setOrganizationId(rs.getInt("organization_id"));
-            org.setDescription(rs.getString("description"));
+            org.setName(rs.getString("name"));
             org.setPhone(rs.getString("phone"));
             org.setEmail(rs.getString("email"));
             return org;

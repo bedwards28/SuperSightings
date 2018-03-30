@@ -30,7 +30,7 @@
                 Name: <c:out value="${organization.location.name}"/>
             </p>
             <p>
-                Description: <c:out value="${organization.description}" />
+                Description: <c:out value="${organization.location.description}" />
             </p>
             <p>
                 Address Line 1: <c:out value="${organization.location.addressLine1}" />

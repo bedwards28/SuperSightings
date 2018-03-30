@@ -39,11 +39,11 @@ public class Location {
     @NotEmpty(message = "Please enter a country for this location.")
     @Length(max = 45, message = "The country cannot exceed 45 characters.")
     private String country;
-    @NotEmpty(message = "Please enter the latitude for this location.")
-    @Length(max = 9, message = "Latitude cannot exceed 9 characters.")
+//    @NotEmpty(message = "Please enter the latitude for this location.")
+//    @Length(max = 9, message = "Latitude cannot exceed 9 characters.")
     private double latitude;
-    @NotEmpty(message = "Please enter the longitude for this location.")
-    @Length(max = 9, message = "Longitude cannot exceed 9 characters.")
+//    @NotEmpty(message = "Please enter the longitude for this location.")
+//    @Length(max = 9, message = "Longitude cannot exceed 9 characters.")
     private double longitude;
 
     public int getLocationId() {

@@ -1,13 +1,15 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="s" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="sf" uri="http://www.springframework.org/tags/form"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
     <head>
         <title>Super Sightings</title>
         <!-- Bootstrap core CSS -->
-        <link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet">        
+        <link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet">
+        <link href="${pageContext.request.contextPath}/css/supersightings.css" rel="stylesheet">
     </head>
     <body>
         <div class="container">
@@ -61,26 +63,54 @@
                 
                 <div class="col-md-6">
                     <h2>Add Sighting</h2>
-                    <form class="form-horizontal" role="form" method="POST" action="createOrganization">
+                    <sf:form class="form-horizontal" role="form" method="POST" action="createSighting">
                         <div class="form-group">
-                            <label for="add-organization-name" class="col-md-4 control-label">Name:</label>
+                            <label for="select-loctation" class="col-md-4 control-label">Select a location:</label>
                             <div class="col-md-8">
-                                <input type="text" class="form-control" name="name" placeholder="Organization Name"/>
+                                <select class="form-control" id="select-location" name="select-location" required>
+                                    <c:forEach var="currentLocation" items="${locationList}">
+                                        <c:choose>
+                                            <c:when test="${sighting.location.locationId == currentLocation.locationId}">
+                                                <option value="${currentLocation.locationId}" selected>${currentLocation.name}</option>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <option value="${currentLocation.locationId}">${currentLocation.name}</option>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </c:forEach>
+                                </select>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="add-description" class="col-md-4 control-label">Description:</label>
+                            <label for="date" class="col-md-4 control-label">Date:</label>
+                            <input type="date" path="date" name="date" id="date" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="add-supers" class="col-md-4 control-label">Super Beings:</label>
                             <div class="col-md-8">
-                                <textarea rows="3" cols="46" class="form-control" name="description" placeholder="Description">
-                                </textarea>
+                                <fieldset class="supersCheckbox">
+                                    <c:forEach var="currentSuper" items="${superList}">
+                                        <div class="form-control">
+                                            <c:choose>
+                                                <c:when test="${sighting.superBeings.contains(currentSuper)}">
+                                                    <input type="checkbox" name="superIds" value="${currentSuper.superId}" checked/>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <input type="checkbox" name="superIds" value="${currentSuper.superId}" />
+                                                </c:otherwise>
+                                            </c:choose>
+                                            <label>${currentSuper.name}</label>
+                                        </div>
+                                    </c:forEach>
+                                </fieldset>
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="col-md-offset-4 col-md-8">
-                                <input type="submit" class="btn btn-primary" value="Create Organization"/>
+                                <input type="submit" class="btn btn-primary" value="Create Sighting"/>
                             </div>
                         </div>
-                    </form>
+                    </sf:form>
                 </div>
             </div>
 

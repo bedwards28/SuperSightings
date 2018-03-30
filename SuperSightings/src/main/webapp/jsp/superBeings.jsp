@@ -90,7 +90,7 @@
                         <div class="form-group">
                             <label for="add-power" class="col-md-4 control-label">Powers:</label>
                             <div class="col-md-8">
-                                <fieldset class="powerCheckbox">
+                                <fieldset class="powersCheckbox">
                                     <c:forEach var="currentPower" items="${powerList}">
                                         <div class="form-control">
                                             <c:choose>

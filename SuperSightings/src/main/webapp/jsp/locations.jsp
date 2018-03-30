@@ -127,14 +127,14 @@
                         <div class="form-group">
                             <label for="add-location-latitude" class="col-md-4 control-label">Latitude:</label>
                             <div class="col-md-8">
-                                <sf:input type="number" max="180" step=".0001" class="form-control" name="latitude" path="latitude" placeholder="Latitude"/>
+                                <sf:input type="number" max="90" min="-90" step=".0001" class="form-control" name="latitude" path="latitude" placeholder="Latitude"/>
                                 <sf:errors path="latitude" cssClass="error"></sf:errors>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="add-location-longitude" class="col-md-4 control-label">Longitude:</label>
                             <div class="col-md-8">
-                                <sf:input type="number" max="180" step=".0001" class="form-control" name="longitude" path="longitude" placeholder="Longitude"/>
+                                <sf:input type="number" max="180" min="-180" step=".0001" class="form-control" name="longitude" path="longitude" placeholder="Longitude"/>
                                 <sf:errors path="longitude" cssClass="error"></sf:errors>
                             </div>
                         </div>

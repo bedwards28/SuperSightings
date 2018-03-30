@@ -19,14 +19,15 @@ public class Organization {
     
     private int organizationId;
     @NotEmpty(message = "Please enter a name for the organization.")
-    @Length(max = 45, message = "The organization name cannot exceed 45 characters.")
-    private String description;
+    @Length(max = 50, message = "The organization name cannot exceed 45 characters.")
+    private String name;
     private Location location;
-    @NotEmpty(message = "Please enter a phone number for the organization.")
+    @NotEmpty(message = "Please enter a valid phone number (ex 123-456-7890).")
     @Length(max = 20, message = "The phone number cannot exceed 20 characters.")
     private String phone;
     @Email(message = "Please enter a valid email address.")
     @Length(max = 100, message = "The email cannot exceed 100 characters.")
+    @NotEmpty(message = "Please enter a valid email address.")
     private String email;
     List<SuperBeing> members;
 
@@ -38,12 +39,12 @@ public class Organization {
         this.organizationId = organizationId;
     }
 
-    public String getDescription() {
-        return description;
+    public String getName() {
+        return name;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setName(String name) {
+        this.name = name;
     }
     
     public Location getLocation() {
@@ -82,7 +83,7 @@ public class Organization {
     public int hashCode() {
         int hash = 5;
         hash = 29 * hash + this.organizationId;
-        hash = 29 * hash + Objects.hashCode(this.description);
+        hash = 29 * hash + Objects.hashCode(this.name);
         hash = 29 * hash + Objects.hashCode(this.location);
         hash = 29 * hash + Objects.hashCode(this.phone);
         hash = 29 * hash + Objects.hashCode(this.email);
@@ -105,7 +106,7 @@ public class Organization {
         if (this.organizationId != other.organizationId) {
             return false;
         }
-        if (!Objects.equals(this.description, other.description)) {
+        if (!Objects.equals(this.name, other.name)) {
             return false;
         }
         if (!Objects.equals(this.phone, other.phone)) {

@@ -1,4 +1,4 @@
-.powerCheckbox { 
+.membersCheckbox, .powersCheckbox, .supersCheckbox { 
     border:1px solid #ccc; 
     height: 200px; 
     overflow-y: scroll;
