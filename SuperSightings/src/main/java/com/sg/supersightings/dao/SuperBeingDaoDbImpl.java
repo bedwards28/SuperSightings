@@ -78,7 +78,7 @@ public class SuperBeingDaoDbImpl implements SuperBeingDao {
             = "select * from power where power_id = ?";
 
     private static final String SELECT_ALL_POWERS
-            = "select * from power";
+            = "select * from power order by description ASC";
 
     private static final String UPDATE_POWER
             = "update power set description = ? where power_id = ?";

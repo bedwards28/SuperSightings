@@ -18,7 +18,7 @@
             <nav class="navbar navbar-inverse">
                 <div class="container-fluid">
                     <ul class="nav navbar-nav">
-                        <li><a href="${pageContext.request.contextPath}/index.jsp">Home</a></li>
+                        <li><a href="${pageContext.request.contextPath}/">Home</a></li>
                         <li><a href="${pageContext.request.contextPath}/supers">Super Beings</a></li>
                         <li class="active"><a href="${pageContext.request.contextPath}/organizations">Organizations</a></li>
                         <li><a href="${pageContext.request.contextPath}/locations">Locations</a></li>
@@ -29,43 +29,45 @@
             <div class="row">
                 <div class="col-md-6">
                     <h2>Organizations</h2>
-                    <table id="supersTable" class="table table-hover">
-                        <tr>
-                            <th width="40%">Organization</th>
-                            <th width="30%">Location</th>
-                            <th width="15%"></th>
-                            <th width="15%"></th>
-                        </tr>
-                        <c:forEach var="currentOrg" items="${orgList}">
+                    <div class="content-table">
+                        <table id="supersTable" class="table table-hover">
                             <tr>
-                                <td>
-                                    <a href="organizationDetails?organizationId=${currentOrg.organizationId}">
-                                        <c:out value="${currentOrg.name}"/>
-                                    </a>
-                                </td>
-                                <td>
-                                    <c:out value="${currentOrg.location.city}"/>
-                                </td>
-                                <td>
-                                    <a href="editOrganizationForm?organizationId=${currentOrg.organizationId}">
-                                        Edit
-                                    </a>
-                                </td>
-                                <td>
-                                    <a href="deleteOrganization?organizationId=${currentOrg.organizationId}">
-                                        Delete
-                                    </a>
-                                </td>
+                                <th width="40%">Organization</th>
+                                <th width="30%">Location</th>
+                                <th width="15%"></th>
+                                <th width="15%"></th>
                             </tr>
-                        </c:forEach>
-                    </table>
+                            <c:forEach var="currentOrg" items="${orgList}">
+                                <tr>
+                                    <td>
+                                        <a href="organizationDetails?organizationId=${currentOrg.organizationId}">
+                                            <c:out value="${currentOrg.name}"/>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <c:out value="${currentOrg.location.city}"/>
+                                    </td>
+                                    <td>
+                                        <a href="editOrganizationForm?organizationId=${currentOrg.organizationId}">
+                                            Edit
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="deleteOrganization?organizationId=${currentOrg.organizationId}">
+                                            Delete
+                                        </a>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                        </table>
+                    </div>
                 </div>
-                
+
                 <div class="col-md-6">
                     <h2>Add Organization</h2>
                     <sf:form class="form-horizontal" role="form" method="POST" 
                              modelAttribute="organization" action="createOrganization">
-                        
+
                         <div class="form-group">
                             <label for="select-loctation" class="col-md-4 control-label">Select a location:</label>
                             <div class="col-md-8">
@@ -88,26 +90,26 @@
                             <div class="col-md-8">
                                 <sf:input type="text" class="form-control" name="name" path="name" placeholder="Name" />
                                 <sf:errors path="name" cssClass="error"></sf:errors>
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="add-phone" class="col-md-4 control-label">Phone:</label>
-                            <div class="col-md-8">
-                            <sf:input type="tel" minlength="12" maxlength="20" class="form-control" name="phone" path="phone" placeholder="123-456-7890" />
+                            <div class="form-group">
+                                <label for="add-phone" class="col-md-4 control-label">Phone:</label>
+                                <div class="col-md-8">
+                                <sf:input type="tel" minlength="12" maxlength="20" class="form-control" name="phone" path="phone" placeholder="123-456-7890" />
                                 <sf:errors path="phone" cssClass="error"></sf:errors>
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="add-email" class="col-md-4 control-label">Email:</label>
-                            <div class="col-md-8">
+                            <div class="form-group">
+                                <label for="add-email" class="col-md-4 control-label">Email:</label>
+                                <div class="col-md-8">
                                 <sf:input type="email" class="form-control" name="email" path="email" placeholder="JohnDoe@example.com" />
                                 <sf:errors path="email" cssClass="error"></sf:errors>
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="add-members" class="col-md-4 control-label">Members:</label>
-                            <div class="col-md-8">
-                                <fieldset class="membersCheckbox">
+                            <div class="form-group">
+                                <label for="add-members" class="col-md-4 control-label">Members:</label>
+                                <div class="col-md-8">
+                                    <fieldset class="membersCheckbox">
                                     <c:forEach var="currentSuper" items="${superList}">
                                         <div class="form-control">
                                             <c:choose>
@@ -129,7 +131,7 @@
                                 <input type="submit" class="btn btn-primary" value="Create Organization"/>
                             </div>
                             <div class="col-md-4">
-                                <a href="addLocationForm"><input type="button" class="btn btn-primary" value="Add Location" /><a>
+                                <a href="${pageContext.request.contextPath}/locations"><input type="button" class="btn btn-primary" value="Add Location" /><a>
                             </div>
                         </div>
                     </sf:form>

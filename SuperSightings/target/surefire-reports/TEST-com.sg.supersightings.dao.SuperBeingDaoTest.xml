@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite tests="23" failures="0" name="com.sg.supersightings.dao.SuperBeingDaoTest" time="5.227" errors="0" skipped="0">
+<testsuite tests="23" failures="0" name="com.sg.supersightings.dao.SuperBeingDaoTest" time="7.191" errors="0" skipped="0">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk1.8.0_151\jre\bin"/>
@@ -61,27 +61,27 @@
     <property name="sun.desktop" value="windows"/>
     <property name="sun.cpu.isalist" value="amd64"/>
   </properties>
-  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testDeletePower" time="1.029"/>
-  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testGetAllOrganizations" time="0.272"/>
-  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testGetAllSuperBeings" time="0.285"/>
-  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testUpdateOrganization" time="0.25"/>
-  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testDeleteLocation" time="0.209"/>
-  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testUpdatePower" time="0.164"/>
-  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testAddGetLocation" time="0.191"/>
-  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testGetAllSightings" time="0.248"/>
-  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testAddGetDeleteSighting" time="0.225"/>
-  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testUpdateSighting" time="0.259"/>
-  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testDeleteSuperBeing" time="0.168"/>
-  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testGetAllSightingsByDate" time="0.191"/>
-  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testUpdateSuperBeing" time="0.158"/>
-  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testAddGetPower" time="0.115"/>
-  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testGetMostRecentSightings" time="0.192"/>
-  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testGetAllPowers" time="0.203"/>
-  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testGetAllOrganizationMembers" time="0.161"/>
-  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testGetAllOrganizationsBySuperId" time="0.221"/>
-  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testAddGetSuperBeing" time="0.132"/>
-  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testGetAllLocations" time="0.121"/>
-  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testUpdateLocation" time="0.117"/>
-  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testGetAllLocationsBySuperId" time="0.12"/>
-  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testAddGetDeleteOrganization" time="0.123"/>
+  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testDeletePower" time="1.11"/>
+  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testGetAllOrganizations" time="0.289"/>
+  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testGetAllSuperBeings" time="0.26"/>
+  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testUpdateOrganization" time="0.272"/>
+  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testDeleteLocation" time="0.274"/>
+  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testUpdatePower" time="0.321"/>
+  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testAddGetLocation" time="0.22"/>
+  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testGetAllSightings" time="0.601"/>
+  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testAddGetDeleteSighting" time="0.34"/>
+  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testUpdateSighting" time="0.255"/>
+  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testDeleteSuperBeing" time="0.223"/>
+  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testGetAllSightingsByDate" time="0.248"/>
+  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testUpdateSuperBeing" time="0.183"/>
+  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testAddGetPower" time="0.142"/>
+  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testGetMostRecentSightings" time="0.237"/>
+  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testGetAllPowers" time="0.277"/>
+  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testGetAllOrganizationMembers" time="0.359"/>
+  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testGetAllOrganizationsBySuperId" time="0.499"/>
+  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testAddGetSuperBeing" time="0.332"/>
+  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testGetAllLocations" time="0.154"/>
+  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testUpdateLocation" time="0.174"/>
+  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testGetAllLocationsBySuperId" time="0.171"/>
+  <testcase classname="com.sg.supersightings.dao.SuperBeingDaoTest" name="testAddGetDeleteOrganization" time="0.155"/>
 </testsuite>

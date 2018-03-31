@@ -16,7 +16,7 @@
             <nav class="navbar navbar-inverse">
                 <div class="container-fluid">
                     <ul class="nav navbar-nav">
-                        <li class="active"><a href="${pageContext.request.contextPath}/index.jsp">Home</a></li>
+                        <li class="active"><a href="${pageContext.request.contextPath}/">Home</a></li>
                         <li><a href="${pageContext.request.contextPath}/supers">Super Beings</a></li>
                         <li><a href="${pageContext.request.contextPath}/organizations">Organizations</a></li>
                         <li><a href="${pageContext.request.contextPath}/locations">Locations</a></li>
@@ -43,12 +43,11 @@
                 
                 <div class="col-md-6">
                     <h3>Newsfeed (The 10 Most Recent Sightings)</h3>
-                    <table id="supersTable" class="table table-hover">
+                    <table id="sighting-table" class="table table-hover">
                         <tr>
-                            <th width="40%">Location</th>
+                            <th width="50%">Location</th>
                             <th width="30%">Date</th>
-                            <th width="15%"></th>
-                            <th width="15%"></th>
+                            <th width="20%"></th>
                         </tr>
                         <c:forEach var="currentSighting" items="${sightingList}">
                             <tr>
@@ -75,11 +74,11 @@
                     </table>
                 </div>
             </div>
-
         </div>
         <!-- Placed at the end of the document so the pages load faster -->
         <script src="${pageContext.request.contextPath}/js/jquery-3.1.1.min.js"></script>
         <script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
+        <script src="${pageContext.request.contextPath}/js/home.js"></script>
 
     </body>
 </html>

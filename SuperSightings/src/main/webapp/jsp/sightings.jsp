@@ -18,7 +18,7 @@
             <nav class="navbar navbar-inverse">
                 <div class="container-fluid">
                     <ul class="nav navbar-nav">
-                        <li><a href="${pageContext.request.contextPath}/index.jsp">Home</a></li>
+                        <li><a href="${pageContext.request.contextPath}/">Home</a></li>
                         <li><a href="${pageContext.request.contextPath}/supers">Super Beings</a></li>
                         <li><a href="${pageContext.request.contextPath}/organizations">Organizations</a></li>
                         <li><a href="${pageContext.request.contextPath}/locations">Locations</a></li>
@@ -29,38 +29,40 @@
             <div class="row">
                 <div class="col-md-6">
                     <h2>Sightings</h2>
-                    <table id="supersTable" class="table table-hover">
-                        <tr>
-                            <th width="40%">Location</th>
-                            <th width="30%">Date</th>
-                            <th width="15%"></th>
-                            <th width="15%"></th>
-                        </tr>
-                        <c:forEach var="currentSighting" items="${sightingList}">
+                    <div class="content-table">
+                        <table id="supersTable" class="table table-hover">
                             <tr>
-                                <td>
-                                    <a href="sightingDetails?sightingId=${currentSighting.sightingId}">
-                                        <c:out value="${currentSighting.location.name}"/>
-                                    </a>
-                                </td>
-                                <td>
-                                    <c:out value="${currentSighting.date}"/>
-                                </td>
-                                <td>
-                                    <a href="editSightingForm?sightingId=${currentSighting.sightingId}">
-                                        Edit
-                                    </a>
-                                </td>
-                                <td>
-                                    <a href="deleteSighting?sightingId=${currentSighting.sightingId}">
-                                        Delete
-                                    </a>
-                                </td>
+                                <th width="40%">Location</th>
+                                <th width="30%">Date</th>
+                                <th width="15%"></th>
+                                <th width="15%"></th>
                             </tr>
-                        </c:forEach>
-                    </table>
+                            <c:forEach var="currentSighting" items="${sightingList}">
+                                <tr>
+                                    <td>
+                                        <a href="sightingDetails?sightingId=${currentSighting.sightingId}">
+                                            <c:out value="${currentSighting.location.name}"/>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <c:out value="${currentSighting.date}"/>
+                                    </td>
+                                    <td>
+                                        <a href="editSightingForm?sightingId=${currentSighting.sightingId}">
+                                            Edit
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="deleteSighting?sightingId=${currentSighting.sightingId}">
+                                            Delete
+                                        </a>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                        </table>
+                    </div>
                 </div>
-                
+
                 <div class="col-md-6">
                     <h2>Add Sighting</h2>
                     <sf:form class="form-horizontal" role="form" method="POST" action="createSighting">

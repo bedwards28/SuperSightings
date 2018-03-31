@@ -479,9 +479,13 @@ public class SuperSightingsController {
         return "redirect:sightings";
     }
 
-    @GetMapping("/addPowerForm")
-    public String displayAddPowerForm() {
-        return "addPowerForm";
+    @PostMapping("/createPower")
+    public String createPower(
+            @RequestParam("power-description") String description) {
+        
+        Power power = new Power(description);
+        service.addPower(power);
+        return "redirect:supers";
     }
 
 }

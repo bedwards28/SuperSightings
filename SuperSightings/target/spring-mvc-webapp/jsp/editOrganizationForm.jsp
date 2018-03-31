@@ -18,7 +18,7 @@
             <nav class="navbar navbar-inverse">
                 <div class="container-fluid">
                     <ul class="nav navbar-nav">
-                        <li><a href="${pageContext.request.contextPath}/index.jsp">Home</a></li>
+                        <li><a href="${pageContext.request.contextPath}/">Home</a></li>
                         <li><a href="${pageContext.request.contextPath}/supers">Super Beings</a></li>
                         <li class="active"><a href="${pageContext.request.contextPath}/organizations">Organizations</a></li>
                         <li><a href="${pageContext.request.contextPath}/locations">Locations</a></li>
