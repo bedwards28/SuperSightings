@@ -82,7 +82,7 @@ public class SuperBeingDaoDbImpl implements SuperBeingDao {
 
     private static final String UPDATE_POWER
             = "update power set description = ? where power_id = ?";
-//    
+
     private static final String DELETE_ALL_POWERS_BY_SUPER_ID
             = "delete from super_being_power where super_id = ?";
 
@@ -153,7 +153,7 @@ public class SuperBeingDaoDbImpl implements SuperBeingDao {
     private static final String INSERT_SUPER_BEING_SIGHTING
             = "insert into super_being_sighting (super_id, sighting_id) "
             + "values (?, ?)";
-    
+
     private static final String DELETE_ALL_SUPER_SIGHTINGS_BY_SIGHTING_ID
             = "delete from super_being_sighting where sighting_id = ?";
 
@@ -201,6 +201,9 @@ public class SuperBeingDaoDbImpl implements SuperBeingDao {
             = "select organization_id "
             + "from organization_members "
             + "where super_id = ?";
+
+    private static final String SELECT_MOST_RECENT_SIGHTINGS
+            = "select * from sighting order by date desc limit 10";
 
     @Override
     @Transactional
@@ -301,7 +304,7 @@ public class SuperBeingDaoDbImpl implements SuperBeingDao {
 
         // delete super_being_power entries
         deleteSuperBeingPowersBySuperId(being.getSuperId());
-        
+
         // recreate super_being_power entries
         insertSuperBeingPowers(being);
 
@@ -353,16 +356,15 @@ public class SuperBeingDaoDbImpl implements SuperBeingDao {
     @Transactional
     public Power addPower(Power power) {
         Power fromDb = new Power();
-        
+
         try {
-            fromDb = jt.queryForObject(SELECT_POWER_BY_DESCRIPTION, 
-                new PowerMapper(), 
-                power.getDescription());
+            fromDb = jt.queryForObject(SELECT_POWER_BY_DESCRIPTION,
+                    new PowerMapper(),
+                    power.getDescription());
         } catch (DataAccessException e) {
             fromDb = null;
         }
-        
-        
+
         if (fromDb == null) {
             jt.update(INSERT_POWER, power.getDescription());
 
@@ -781,6 +783,22 @@ public class SuperBeingDaoDbImpl implements SuperBeingDao {
         }
 
         o.setMembers(members);
+    }
+
+    @Override
+    public List<Sighting> getMostRecentSightings() {
+        List<Sighting> sightingList = jt.query(SELECT_MOST_RECENT_SIGHTINGS,
+                new SightingMapper());
+
+        for (Sighting currentSighting : sightingList) {
+            // associate location with sighting
+            associateLocationWithSighting(currentSighting);
+
+            // associate super beings with sighting
+            associateSuperBeingsWithSighting(currentSighting);
+        }
+        
+        return sightingList;
     }
 
     private static final class SuperMapper implements RowMapper<SuperBeing> {

@@ -84,4 +84,6 @@ public interface SuperSightingsServiceLayer {
     
     public List<Organization> getAllOrganizationsBySuperId(int superId);
     
+    public List<Sighting> getMostRecentSightings();
+    
 }

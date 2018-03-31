@@ -5,13 +5,13 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Super Sightings</title>
+        <title>H.E.R.O. - Sighting Details</title>
         <!-- Bootstrap core CSS -->
         <link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet">        
     </head>
     <body>
         <div class="container">
-            <h1>Super Sightings</h1>
+            <h1>Hero Education and Relationship Organization</h1>
             <hr/>
             <nav class="navbar navbar-inverse">
                 <div class="container-fluid">
@@ -25,19 +25,36 @@
                 </div>
             </nav>
 
-            <h3>Sighting Details</h3>
-            <p>
-                Location: <c:out value="${sighting.location.name}"/>
-            </p>
-            <p>
-                Date: <c:out value="${sighting.date}" />
-            </p>
-            <p>
-                Super Beings Sighted: 
+            <div class="container">
+                <h3 class="col-md-offset-1 col-md-11">Sighting Details</h3>
+
+                <div class="row">
+                    <div class="col-md-2">
+                        <p class="text-right">Location:</p>
+                    </div>
+                    <div class="col-md-10">
+                        <c:out value="${sighting.location.name}"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <p class="text-right">Date:</p>
+                    </div>
+                    <div class="col-md-10">
+                        <c:out value="${sighting.date}"/>
+                    </div>
+                </div>
                 <c:forEach var="currentSuperBeing" items="${sighting.superBeings}">
-                    <c:out value="${currentSuperBeing.name}"/>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <p class="text-right">Super Being Sighted:</p>
+                        </div>
+                        <div class="col-md-10">
+                            <c:out value="${currentSuperBeing.name}"/>
+                        </div>
+                    </div>
                 </c:forEach>
-            </p>
+            </div>
 
         </div>
         <!-- Placed at the end of the document so the pages load faster -->

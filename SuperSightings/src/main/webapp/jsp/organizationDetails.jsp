@@ -5,13 +5,13 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Super Sightings</title>
+        <title>H.E.R.O. - Organization Details</title>
         <!-- Bootstrap core CSS -->
         <link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet">        
     </head>
     <body>
         <div class="container">
-            <h1>Super Sightings</h1>
+            <h1>Hero Education and Relationship Organization</h1>
             <hr/>
             <nav class="navbar navbar-inverse">
                 <div class="container-fluid">
@@ -25,49 +25,116 @@
                 </div>
             </nav>
 
-            <h3>Organization Details</h3>
-            <p>
-                Name: <c:out value="${organization.location.name}"/>
-            </p>
-            <p>
-                Description: <c:out value="${organization.location.description}" />
-            </p>
-            <p>
-                Address Line 1: <c:out value="${organization.location.addressLine1}" />
-            </p>
-            <p>
-                Address Line 2: <c:out value="${organization.location.addressLine2}" />
-            </p>
-            <p>
-                City: <c:out value="${organization.location.city}" />
-            </p>
-            <p>
-                Region: <c:out value="${organization.location.region}" />
-            </p>
-            <p>
-                Postal Code: <c:out value="${organization.location.postalCode}" />
-            </p>
-            <p>
-                Country: <c:out value="${organization.location.country}" />
-            </p>
-            <p>
-                Latitude: <c:out value="${organization.location.latitude}" />
-            </p>
-            <p>
-                Longitude: <c:out value="${organization.location.longitude}" />
-            </p>
-            <p>
-                Phone: <c:out value="${organization.phone}" />
-            </p>
-            <p>
-                Email: <c:out value="${organization.email}" />
-            </p>
-            <p>
-                Members: 
+            <div class="container">
+                <h3 class="col-md-offset-1 col-md-11">Organization Details</h3>
+
+                <div class="row">
+                    <div class="col-md-2">
+                        <p class="text-right">Name:</p>
+                    </div>
+                    <div class="col-md-10">
+                        <c:out value="${organization.location.name}"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <p class="text-right">Description:</p>
+                    </div>
+                    <div class="col-md-10">
+                        <c:out value="${organization.location.description}"/>
+                    </div>
+                </div>  
+                <div class="row">
+                    <div class="col-md-2">
+                        <p class="text-right">Address Line 1:</p>
+                    </div>
+                    <div class="col-md-10">
+                        <c:out value="${organization.location.addressLine1}"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <p class="text-right">Address Line 2:</p>
+                    </div>
+                    <div class="col-md-10">
+                        <c:out value="${organization.location.addressLine2}"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <p class="text-right">City:</p>
+                    </div>
+                    <div class="col-md-10">
+                        <c:out value="${organization.location.city}"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <p class="text-right">Region:</p>
+                    </div>
+                    <div class="col-md-10">
+                        <c:out value="${organization.location.region}"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <p class="text-right">Postal Code:</p>
+                    </div>
+                    <div class="col-md-10">
+                        <c:out value="${organization.location.postalCode}"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <p class="text-right">Country:</p>
+                    </div>
+                    <div class="col-md-10">
+                        <c:out value="${organization.location.country}"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <p class="text-right">Latitude:</p>
+                    </div>
+                    <div class="col-md-10">
+                        <c:out value="${organization.location.latitude}"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <p class="text-right">Longitude:</p>
+                    </div>
+                    <div class="col-md-10">
+                        <c:out value="${organization.location.longitude}"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <p class="text-right">Phone:</p>
+                    </div>
+                    <div class="col-md-10">
+                        <c:out value="${organization.phone}"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <p class="text-right">Email:</p>
+                    </div>
+                    <div class="col-md-10">
+                        <c:out value="${organization.email}"/>
+                    </div>
+                </div>
                 <c:forEach var="currentMember" items="${organization.members}">
-                    <c:out value="${currentMember.name}"/>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <p class="text-right">Member:</p>
+                        </div>
+                        <div class="col-md-10">
+                            <c:out value="${currentMember.name}"/>
+                        </div>
+                    </div>
                 </c:forEach>
-            </p>
+            </div>
 
         </div>
         <!-- Placed at the end of the document so the pages load faster -->

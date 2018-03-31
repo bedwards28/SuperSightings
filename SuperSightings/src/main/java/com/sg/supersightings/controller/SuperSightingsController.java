@@ -7,7 +7,6 @@ import com.sg.supersightings.model.Sighting;
 import com.sg.supersightings.model.SuperBeing;
 import com.sg.supersightings.service.SuperSightingsServiceLayer;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -19,12 +18,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-//@CrossOrigin
-//@RestController
 @Controller
 public class SuperSightingsController {
 
@@ -34,10 +30,22 @@ public class SuperSightingsController {
     public SuperSightingsController() {
     }
 
-    @RequestMapping(value = "/", method = RequestMethod.GET)
+    @GetMapping("/")
     public String displayHomePage(Model model) {
         // add newsfeed items to model
-        System.out.println("hello");
+        return "redirect:index";
+    }
+    
+    @GetMapping("/recentsightings")
+    @ResponseBody
+    public List<Sighting> getRecentSightings() {
+        return service.getMostRecentSightings();
+    }
+    
+    @GetMapping("/index")
+    public String displayIndex(Model model) {
+        List<Sighting> sightingList = service.getMostRecentSightings();
+        model.addAttribute("sightingList", sightingList);
         return "index";
     }
 

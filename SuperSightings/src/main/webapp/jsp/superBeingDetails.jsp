@@ -5,13 +5,13 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Super Sightings</title>
+        <title>H.E.R.O. - Super Being Details</title>
         <!-- Bootstrap core CSS -->
         <link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet">        
     </head>
     <body>
         <div class="container">
-            <h1>Super Sightings</h1>
+            <h1>Hero Education and Relationship Organization</h1>
             <hr/>
             <nav class="navbar navbar-inverse">
                 <div class="container-fluid">
@@ -25,22 +25,46 @@
                 </div>
             </nav>
 
-            <h3>Super Hero/Villain Details</h3>
-            <p>
-                Name: <c:out value="${superBeing.name}"/>
-            </p>
-            <p>
-                Description: <c:out value="${superBeing.description}" />
-            </p>
-            <p>
-                Secret Identity: <c:out value="${superBeing.identity}" />
-            </p>
-            <p>
-                Powers: 
+            <div class="container">
+                <h3 class="col-md-offset-1 col-md-11">Super Hero/Villain Details</h3>
+
+                <div class="row">
+                    <div class="col-md-2">
+                        <p class="text-right">Name:</p>
+                    </div>
+                    <div class="col-md-10">
+                        <c:out value="${superBeing.name}"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <p class="text-right">Description:</p>
+                    </div>
+                    <div class="col-md-10">
+                        <c:out value="${superBeing.description}"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <p class="text-right">Secret Identity:</p>
+                    </div>
+                    <div class="col-md-10">
+                        <c:out value="${superBeing.identity}"/>
+                    </div>
+                </div>
+
                 <c:forEach var="currentPower" items="${superBeing.powers}">
-                    <c:out value="${currentPower.description}"/>
+                    <div class="row">
+                        <div class="col-md-2">
+                            <p class="text-right">Power:</p>
+                        </div>
+                        <div class="col-md-10">
+                            <c:out value="${currentPower.description}"/>
+                        </div>
+                    </div>
                 </c:forEach>
-            </p>
+
+            </div>
 
         </div>
         <!-- Placed at the end of the document so the pages load faster -->

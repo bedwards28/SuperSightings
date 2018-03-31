@@ -19,6 +19,16 @@ public class Sighting {
     private Location location;
     private LocalDate date;
     List<SuperBeing> superBeings;
+    
+    public Sighting() {
+        
+    }
+    
+    public Sighting(Location location, LocalDate date, List<SuperBeing> supers) {
+        this.location = location;
+        this.date = date;
+        this.superBeings = supers;
+    }
 
     public int getSightingId() {
         return sightingId;

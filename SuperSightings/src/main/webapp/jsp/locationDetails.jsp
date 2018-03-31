@@ -5,13 +5,13 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Super Sightings</title>
+        <title>H.E.R.O. - Location Details</title>
         <!-- Bootstrap core CSS -->
         <link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet">        
     </head>
     <body>
         <div class="container">
-            <h1>Super Sightings</h1>
+            <h1>Hero Education and Relationship Organization</h1>
             <hr/>
             <nav class="navbar navbar-inverse">
                 <div class="container-fluid">
@@ -25,37 +25,89 @@
                 </div>
             </nav>
 
-            <h3>Location Details</h3>
-            <p>
-                Name: <c:out value="${location.name}"/>
-            </p>
-            <p>
-                Description: <c:out value="${location.description}" />
-            </p>
-            <p>
-                Address Line 1: <c:out value="${location.addressLine1}" />
-            </p>
-            <p>
-                Address Line 2: <c:out value="${location.addressLine2}" />
-            </p>
-            <p>
-                City: <c:out value="${location.city}" />
-            </p>
-            <p>
-                Region: <c:out value="${location.region}" />
-            </p>
-            <p>
-                Postal Code: <c:out value="${location.postalCode}" />
-            </p>
-            <p>
-                Country: <c:out value="${location.country}" />
-            </p>
-            <p>
-                Latitude: <c:out value="${location.latitude}" />
-            </p>
-            <p>
-                Longitude: <c:out value="${location.longitude}" />
-            </p>
+            <div class="container">
+                <h3 class="col-md-offset-1 col-md-11">Location Details</h3>
+                <div class="row">
+                    <div class="col-md-2">
+                        <p class="text-right">Name:</p>
+                    </div>
+                    <div class="col-md-10">
+                        <c:out value="${location.name}"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <p class="text-right">Description:</p>
+                    </div>
+                    <div class="col-md-10">
+                        <c:out value="${location.description}"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <p class="text-right">Address Line 1:</p>
+                    </div>
+                    <div class="col-md-10">
+                        <c:out value="${location.addressLine1}"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <p class="text-right">Address Line 2:</p>
+                    </div>
+                    <div class="col-md-10">
+                        <c:out value="${location.addressLine2}"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <p class="text-right">City:</p>
+                    </div>
+                    <div class="col-md-10">
+                        <c:out value="${location.city}"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <p class="text-right">Region:</p>
+                    </div>
+                    <div class="col-md-10">
+                        <c:out value="${location.region}"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <p class="text-right">Postal Code:</p>
+                    </div>
+                    <div class="col-md-10">
+                        <c:out value="${location.postalCode}"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <p class="text-right">Country:</p>
+                    </div>
+                    <div class="col-md-10">
+                        <c:out value="${location.country}"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <p class="text-right">Latitude:</p>
+                    </div>
+                    <div class="col-md-10">
+                        <c:out value="${location.latitude}"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <p class="text-right">Longitude:</p>
+                    </div>
+                    <div class="col-md-10">
+                        <c:out value="${location.longitude}"/>
+                    </div>
+                </div>
+            </div>
 
         </div>
         <!-- Placed at the end of the document so the pages load faster -->

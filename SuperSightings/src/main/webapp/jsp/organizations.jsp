@@ -6,14 +6,14 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Super Sightings</title>
+        <title>H.E.R.O. - Organizations</title>
         <!-- Bootstrap core CSS -->
         <link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet">  
         <link href="${pageContext.request.contextPath}/css/supersightings.css" rel="stylesheet">
     </head>
     <body>
         <div class="container">
-            <h1>Super Sightings</h1>
+            <h1>Hero Education and Relationship Organization</h1>
             <hr/>
             <nav class="navbar navbar-inverse">
                 <div class="container-fluid">

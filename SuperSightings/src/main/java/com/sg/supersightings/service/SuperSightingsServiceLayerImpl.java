@@ -177,5 +177,10 @@ public class SuperSightingsServiceLayerImpl implements SuperSightingsServiceLaye
     public List<Organization> getAllOrganizationsBySuperId(int superId) {
         return dao.getAllOrganizationsBySuperId(superId);
     }
+
+    @Override
+    public List<Sighting> getMostRecentSightings() {
+        return dao.getMostRecentSightings();
+    }
     
 }

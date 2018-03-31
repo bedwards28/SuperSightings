@@ -13,6 +13,7 @@ import com.sg.supersightings.model.SuperBeing;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
@@ -29,6 +30,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  */
 public class SuperBeingDaoTest {
     
+    @Inject
     SuperBeingDao dao;
     
     public SuperBeingDaoTest() {
@@ -207,63 +209,63 @@ public class SuperBeingDaoTest {
      */
     @Test
     public void testGetAllOrganizationMembers() {
-//        Power power = new Power();
-//        power.setDescription("Super Strength");
-//        List<Power> powers = new ArrayList<>();
-//        powers.add(power);
-//        
-//        SuperBeing sb = new SuperBeing();
-//        sb.setName("B-Man");
-//        sb.setDescription("Can beat up Batman and Superman at same time");
-//        sb.setIdentity("Blake Edwards");
-//        sb.setPowers(powers);
-//        
-//        dao.addSuperBeing(sb);
-//        
-//        Power power2 = new Power();
-//        power2.setDescription("Super Cool");
-//        List<Power> powers2 = new ArrayList<>();
-//        powers2.add(power2);
-//        
-//        SuperBeing sb2 = new SuperBeing();
-//        sb2.setName("Iceman");
-//        sb2.setDescription("Retired crime fighter");
-//        sb2.setIdentity("Chuck Lidell");
-//        sb2.setPowers(powers2);
-//        
-//        dao.addSuperBeing(sb2);
-//        
-//        List<SuperBeing> members = new ArrayList<>();
-//        members.add(sb);
-//        members.add(sb2);
-//        
-//        Location loc = new Location();
-//        loc.setName("Legion of Doom");
-//        loc.setDescription("Bad guy party palace");
-//        loc.setAddressLine1("123 1st Street");
-//        loc.setAddressLine2("Apt 2");
-//        loc.setCity("Apple Valley");
-//        loc.setRegion("MN");
-//        loc.setPostalCode("55111");
-//        loc.setCountry("USA");
-//        loc.setLatitude(100.5);
-//        loc.setLongitude(75.75);
-//        dao.addLocation(loc);
-//        
-//        Organization org = new Organization();
-//        org.setName("Justice League");
-//        org.setLocation(loc);
-//        org.setPhone("111-111-1111");
-//        org.setEmail("sup@jl.com");
-//        org.setMembers(members);
-//        
-//        dao.addOrganization(org);
-//        
-//        List<SuperBeing> orgMembers = 
-//                dao.getAllOrganizationMembers(org.getOrganizationId());
-//        
-//        assertEquals(sb, orgMembers.get(0));
-//        assertEquals(sb2, orgMembers.get(1));
+        Power power = new Power();
+        power.setDescription("Test Power 1");
+        List<Power> powers = new ArrayList<>();
+        powers.add(power);
+        
+        SuperBeing sb = new SuperBeing();
+        sb.setName("Test Being 1");
+        sb.setDescription("Test Description 1");
+        sb.setIdentity("Test Identity 1");
+        sb.setPowers(powers);
+        
+        dao.addSuperBeing(sb);
+        
+        Power power2 = new Power();
+        power2.setDescription("Test Power 2");
+        List<Power> powers2 = new ArrayList<>();
+        powers2.add(power2);
+        
+        SuperBeing sb2 = new SuperBeing();
+        sb2.setName("Test Being 2");
+        sb2.setDescription("Test Description 2");
+        sb2.setIdentity("Test Identity 2");
+        sb2.setPowers(powers2);
+        
+        dao.addSuperBeing(sb2);
+        
+        List<SuperBeing> members = new ArrayList<>();
+        members.add(sb);
+        members.add(sb2);
+        
+        Location loc = new Location();
+        loc.setName("Test Location 1");
+        loc.setDescription("Test Loc Desc 1");
+        loc.setAddressLine1("Test Address Line 1");
+        loc.setAddressLine2("Test Address Line 2");
+        loc.setCity("Test City");
+        loc.setRegion("Test Region");
+        loc.setPostalCode("11111");
+        loc.setCountry("Test Country");
+        loc.setLatitude(50);
+        loc.setLongitude(100);
+        dao.addLocation(loc);
+        
+        Organization org = new Organization();
+        org.setName("Test Org Name 1");
+        org.setLocation(loc);
+        org.setPhone("111-111-1111");
+        org.setEmail("test1@email.com");
+        org.setMembers(members);
+        
+        dao.addOrganization(org);
+        
+        List<SuperBeing> orgMembers = 
+                dao.getAllOrganizationMembers(org.getOrganizationId());
+        
+        assertEquals(sb, orgMembers.get(0));
+        assertEquals(sb2, orgMembers.get(1));
     }
     
     /**
@@ -840,129 +842,129 @@ public class SuperBeingDaoTest {
     
     @Test
     public void testAddGetDeleteOrganization() {
-//        List<Power> powers = new ArrayList<>();
-//        Power p1 = new Power();
-//        p1.setDescription("Flight");
-//        powers.add(p1);
-//        
-//        List<SuperBeing> beings = new ArrayList<>();
-//        SuperBeing sb = new SuperBeing();
-//        sb.setName("Superman");
-//        sb.setDescription("Super dude");
-//        sb.setIdentity("Clark Kent");
-//        sb.setPowers(powers);
-//        beings.add(sb);
-//        dao.addSuperBeing(sb);
-//        
-//        Location loc = new Location();
-//        loc.setName("Legion of Doom");
-//        loc.setDescription("Bad guy party palace");
-//        loc.setAddressLine1("123 1st Street");
-//        loc.setAddressLine2("Apt 2");
-//        loc.setCity("Apple Valley");
-//        loc.setRegion("MN");
-//        loc.setPostalCode("55111");
-//        loc.setCountry("USA");
-//        loc.setLatitude(100.5);
-//        loc.setLongitude(75.75);
-//        dao.addLocation(loc);
-//        
-//        Organization org = new Organization();
-//        org.setName("Justice League");
-//        org.setLocation(loc);
-//        org.setPhone("111-111-1111");
-//        org.setEmail("sup@jl.com");
-//        org.setMembers(beings);
-//        
-//        Organization fromDao = dao.getOrganizationById(org.getOrganizationId());
-//        assertNull(fromDao);
-//        
-//        dao.addOrganization(org);
-//        fromDao = dao.getOrganizationById(org.getOrganizationId());
-//        assertEquals(fromDao, org);
-//        
-//        dao.deleteOrganization(org.getOrganizationId());
-//        fromDao = dao.getOrganizationById(org.getOrganizationId());
-//        assertNull(fromDao);
+        List<Power> powers = new ArrayList<>();
+        Power p1 = new Power();
+        p1.setDescription("Test Power 1");
+        powers.add(p1);
+        
+        List<SuperBeing> beings = new ArrayList<>();
+        SuperBeing sb = new SuperBeing();
+        sb.setName("Test Being 1");
+        sb.setDescription("Test Being Description 1");
+        sb.setIdentity("Test Identity 1");
+        sb.setPowers(powers);
+        beings.add(sb);
+        dao.addSuperBeing(sb);
+        
+        Location loc = new Location();
+        loc.setName("Test Location 1");
+        loc.setDescription("Test Loc Description 1");
+        loc.setAddressLine1("Test address line 1");
+        loc.setAddressLine2("Test address line 2");
+        loc.setCity("Test City 1");
+        loc.setRegion("Test Region 1");
+        loc.setPostalCode("11111");
+        loc.setCountry("USA");
+        loc.setLatitude(50);
+        loc.setLongitude(100);
+        dao.addLocation(loc);
+        
+        Organization org = new Organization();
+        org.setName("Test Org 1");
+        org.setLocation(loc);
+        org.setPhone("111-111-1111");
+        org.setEmail("test@email.com");
+        org.setMembers(beings);
+        
+        Organization fromDao = dao.getOrganizationById(org.getOrganizationId());
+        assertNull(fromDao);
+        
+        dao.addOrganization(org);
+        fromDao = dao.getOrganizationById(org.getOrganizationId());
+        assertEquals(fromDao, org);
+        
+        dao.deleteOrganization(org.getOrganizationId());
+        fromDao = dao.getOrganizationById(org.getOrganizationId());
+        assertNull(fromDao);
     }
     
     @Test
     public void testUpdateOrganization() {
-//        List<Power> powers = new ArrayList<>();
-//        Power p1 = new Power();
-//        p1.setDescription("Flight");
-//        powers.add(p1);
-//        
-//        List<SuperBeing> beings = new ArrayList<>();
-//        SuperBeing sb = new SuperBeing();
-//        sb.setName("Superman");
-//        sb.setDescription("Super dude");
-//        sb.setIdentity("Clark Kent");
-//        sb.setPowers(powers);
-//        beings.add(sb);
-//        dao.addSuperBeing(sb);
-//        
-//        Location loc = new Location();
-//        loc.setName("Legion of Doom");
-//        loc.setDescription("Bad guy party palace");
-//        loc.setAddressLine1("123 1st Street");
-//        loc.setAddressLine2("Apt 2");
-//        loc.setCity("Apple Valley");
-//        loc.setRegion("MN");
-//        loc.setPostalCode("55111");
-//        loc.setCountry("USA");
-//        loc.setLatitude(100.5);
-//        loc.setLongitude(75.75);
-//        dao.addLocation(loc);
-//        
-//        Organization org = new Organization();
-//        org.setName("Justice League");
-//        org.setLocation(loc);
-//        org.setPhone("111-111-1111");
-//        org.setEmail("sup@jl.com");
-//        org.setMembers(beings);
-//        
-//        dao.addOrganization(org);
-//        
-//        List<Power> powers2 = new ArrayList<>();
-//        Power p2 = new Power();
-//        p2.setDescription("Super Speed");
-//        powers.add(p2);
-//        
-//        List<SuperBeing> beings2 = new ArrayList<>();
-//        SuperBeing sb2 = new SuperBeing();
-//        sb2.setName("Flash");
-//        sb2.setDescription("Super fast");
-//        sb2.setIdentity("Barry Allen");
-//        sb2.setPowers(powers2);
-//        beings2.add(sb2);
-//        dao.addSuperBeing(sb2);
-//        
-//        Location loc2 = new Location();
-//        loc2.setName("Hall of Justice");
-//        loc2.setDescription("Good Guy Spa");
-//        loc2.setAddressLine1("456 4th Ave");
-//        loc2.setAddressLine2(null);
-//        loc2.setCity("Metropolis");
-//        loc2.setRegion("Fake Region");
-//        loc2.setPostalCode("99999");
-//        loc2.setCountry("USA");
-//        loc2.setLatitude(60.60);
-//        loc2.setLongitude(90.11);
-//        dao.addLocation(loc2);
-//        
-//        Organization org2 = new Organization();
-//        org2.setName("Community Watch");
-//        org2.setLocation(loc2);
-//        org2.setPhone("222-222-2222");
-//        org2.setEmail("flash@cw.com");
-//        org2.setMembers(beings2);
-//        org2.setOrganizationId(org.getOrganizationId());
-//        
-//        dao.updateOrganization(org2);
-//        
-//        Organization fromDao = dao.getOrganizationById(org.getOrganizationId());
-//        assertEquals(fromDao, org2);
+        List<Power> powers = new ArrayList<>();
+        Power p1 = new Power();
+        p1.setDescription("Flight");
+        powers.add(p1);
+        
+        List<SuperBeing> beings = new ArrayList<>();
+        SuperBeing sb = new SuperBeing();
+        sb.setName("Superman");
+        sb.setDescription("Super dude");
+        sb.setIdentity("Clark Kent");
+        sb.setPowers(powers);
+        beings.add(sb);
+        dao.addSuperBeing(sb);
+        
+        Location loc = new Location();
+        loc.setName("Legion of Doom");
+        loc.setDescription("Bad guy party palace");
+        loc.setAddressLine1("123 1st Street");
+        loc.setAddressLine2("Apt 2");
+        loc.setCity("Apple Valley");
+        loc.setRegion("MN");
+        loc.setPostalCode("55111");
+        loc.setCountry("USA");
+        loc.setLatitude(100.5);
+        loc.setLongitude(75.75);
+        dao.addLocation(loc);
+        
+        Organization org = new Organization();
+        org.setName("Justice League");
+        org.setLocation(loc);
+        org.setPhone("111-111-1111");
+        org.setEmail("sup@jl.com");
+        org.setMembers(beings);
+        
+        dao.addOrganization(org);
+        
+        List<Power> powers2 = new ArrayList<>();
+        Power p2 = new Power();
+        p2.setDescription("Super Speed");
+        powers.add(p2);
+        
+        List<SuperBeing> beings2 = new ArrayList<>();
+        SuperBeing sb2 = new SuperBeing();
+        sb2.setName("Flash");
+        sb2.setDescription("Super fast");
+        sb2.setIdentity("Barry Allen");
+        sb2.setPowers(powers2);
+        beings2.add(sb2);
+        dao.addSuperBeing(sb2);
+        
+        Location loc2 = new Location();
+        loc2.setName("Hall of Justice");
+        loc2.setDescription("Good Guy Spa");
+        loc2.setAddressLine1("456 4th Ave");
+        loc2.setAddressLine2(null);
+        loc2.setCity("Metropolis");
+        loc2.setRegion("Fake Region");
+        loc2.setPostalCode("99999");
+        loc2.setCountry("USA");
+        loc2.setLatitude(60.60);
+        loc2.setLongitude(90.11);
+        dao.addLocation(loc2);
+        
+        Organization org2 = new Organization();
+        org2.setName("Community Watch");
+        org2.setLocation(loc2);
+        org2.setPhone("222-222-2222");
+        org2.setEmail("flash@cw.com");
+        org2.setMembers(beings2);
+        org2.setOrganizationId(org.getOrganizationId());
+        
+        dao.updateOrganization(org2);
+        
+        Organization fromDao = dao.getOrganizationById(org.getOrganizationId());
+        assertEquals(fromDao, org2);
     }
     
     /**
@@ -971,87 +973,87 @@ public class SuperBeingDaoTest {
     @Test
     public void testGetAllOrganizations() {
         
-//        assertEquals(0, dao.getAllOrganizations().size());
-//        
-//        List<Power> powers = new ArrayList<>();
-//        Power p1 = new Power();
-//        p1.setDescription("Flight");
-//        powers.add(p1);
-//        
-//        List<SuperBeing> beings = new ArrayList<>();
-//        SuperBeing sb = new SuperBeing();
-//        sb.setName("Superman");
-//        sb.setDescription("Super dude");
-//        sb.setIdentity("Clark Kent");
-//        sb.setPowers(powers);
-//        beings.add(sb);
-//        dao.addSuperBeing(sb);
-//        
-//        Location loc = new Location();
-//        loc.setName("Legion of Doom");
-//        loc.setDescription("Bad guy party palace");
-//        loc.setAddressLine1("123 1st Street");
-//        loc.setAddressLine2("Apt 2");
-//        loc.setCity("Apple Valley");
-//        loc.setRegion("MN");
-//        loc.setPostalCode("55111");
-//        loc.setCountry("USA");
-//        loc.setLatitude(100.5);
-//        loc.setLongitude(75.75);
-//        dao.addLocation(loc);
-//        
-//        Organization org = new Organization();
-//        org.setName("Justice League");
-//        org.setLocation(loc);
-//        org.setPhone("111-111-1111");
-//        org.setEmail("sup@jl.com");
-//        org.setMembers(beings);
-//        
-//        dao.addOrganization(org);
-//        
-//        assertEquals(1, dao.getAllOrganizations().size());
-//        
-//        List<Power> powers2 = new ArrayList<>();
-//        Power p2 = new Power();
-//        p2.setDescription("Super Speed");
-//        powers2.add(p2);
-//        
-//        List<SuperBeing> beings2 = new ArrayList<>();
-//        SuperBeing sb2 = new SuperBeing();
-//        sb2.setName("Batman");
-//        sb2.setDescription("The Dark Knight");
-//        sb2.setIdentity("Bruce Wayne");
-//        sb2.setPowers(powers2);
-//        beings2.add(sb2);
-//        dao.addSuperBeing(sb2);
-//        
-//        Location loc2 = new Location();
-//        loc2.setName("Hall of Justice");
-//        loc2.setDescription("Good Guy Spa");
-//        loc2.setAddressLine1("456 4th Ave");
-//        loc2.setAddressLine2(null);
-//        loc2.setCity("Metropolis");
-//        loc2.setRegion("Fake Region");
-//        loc2.setPostalCode("99999");
-//        loc2.setCountry("USA");
-//        loc2.setLatitude(60.60);
-//        loc2.setLongitude(90.11);
-//        dao.addLocation(loc2);
-//        
-//        Organization org2 = new Organization();
-//        org2.setName("Community Watch");
-//        org2.setLocation(loc2);
-//        org2.setPhone("222-222-2222");
-//        org2.setEmail("flash@cw.com");
-//        org2.setMembers(beings2);
-//        
-//        dao.addOrganization(org2);
-//        
-//        assertEquals(2, dao.getAllOrganizations().size());
-//        
-//        List<Organization> orgs = dao.getAllOrganizations();
-//        assertEquals(org, orgs.get(0));
-//        assertEquals(org2, orgs.get(1));
+        assertEquals(0, dao.getAllOrganizations().size());
+        
+        List<Power> powers = new ArrayList<>();
+        Power p1 = new Power();
+        p1.setDescription("Flight");
+        powers.add(p1);
+        
+        List<SuperBeing> beings = new ArrayList<>();
+        SuperBeing sb = new SuperBeing();
+        sb.setName("Superman");
+        sb.setDescription("Super dude");
+        sb.setIdentity("Clark Kent");
+        sb.setPowers(powers);
+        beings.add(sb);
+        dao.addSuperBeing(sb);
+        
+        Location loc = new Location();
+        loc.setName("Legion of Doom");
+        loc.setDescription("Bad guy party palace");
+        loc.setAddressLine1("123 1st Street");
+        loc.setAddressLine2("Apt 2");
+        loc.setCity("Apple Valley");
+        loc.setRegion("MN");
+        loc.setPostalCode("55111");
+        loc.setCountry("USA");
+        loc.setLatitude(100.5);
+        loc.setLongitude(75.75);
+        dao.addLocation(loc);
+        
+        Organization org = new Organization();
+        org.setName("Justice League");
+        org.setLocation(loc);
+        org.setPhone("111-111-1111");
+        org.setEmail("sup@jl.com");
+        org.setMembers(beings);
+        
+        dao.addOrganization(org);
+        
+        assertEquals(1, dao.getAllOrganizations().size());
+        
+        List<Power> powers2 = new ArrayList<>();
+        Power p2 = new Power();
+        p2.setDescription("Super Speed");
+        powers2.add(p2);
+        
+        List<SuperBeing> beings2 = new ArrayList<>();
+        SuperBeing sb2 = new SuperBeing();
+        sb2.setName("Batman");
+        sb2.setDescription("The Dark Knight");
+        sb2.setIdentity("Bruce Wayne");
+        sb2.setPowers(powers2);
+        beings2.add(sb2);
+        dao.addSuperBeing(sb2);
+        
+        Location loc2 = new Location();
+        loc2.setName("Hall of Justice");
+        loc2.setDescription("Good Guy Spa");
+        loc2.setAddressLine1("456 4th Ave");
+        loc2.setAddressLine2(null);
+        loc2.setCity("Metropolis");
+        loc2.setRegion("Fake Region");
+        loc2.setPostalCode("99999");
+        loc2.setCountry("USA");
+        loc2.setLatitude(60.60);
+        loc2.setLongitude(90.11);
+        dao.addLocation(loc2);
+        
+        Organization org2 = new Organization();
+        org2.setName("Community Watch");
+        org2.setLocation(loc2);
+        org2.setPhone("222-222-2222");
+        org2.setEmail("flash@cw.com");
+        org2.setMembers(beings2);
+        
+        dao.addOrganization(org2);
+        
+        assertEquals(2, dao.getAllOrganizations().size());
+        
+        List<Organization> orgs = dao.getAllOrganizations();
+        assertEquals(org, orgs.get(0));
+        assertEquals(org2, orgs.get(1));
     }
     
     /**
@@ -1059,82 +1061,160 @@ public class SuperBeingDaoTest {
      */
     @Test
     public void testGetAllOrganizationsBySuperId() {
-//        Power power = new Power();
-//        power.setDescription("Super Strength");
-//        List<Power> powers = new ArrayList<>();
-//        powers.add(power);
-//        
-//        SuperBeing sb = new SuperBeing();
-//        sb.setName("B-Man");
-//        sb.setDescription("Can beat up Batman and Superman at same time");
-//        sb.setIdentity("Blake Edwards");
-//        sb.setPowers(powers);
-//        
-//        dao.addSuperBeing(sb);
-//        
-//        Power power2 = new Power();
-//        power2.setDescription("Super Cool");
-//        List<Power> powers2 = new ArrayList<>();
-//        powers2.add(power2);
-//        
-//        SuperBeing sb2 = new SuperBeing();
-//        sb2.setName("Iceman");
-//        sb2.setDescription("Retired crime fighter");
-//        sb2.setIdentity("Chuck Lidell");
-//        sb2.setPowers(powers2);
-//        
-//        dao.addSuperBeing(sb2);
-//        
-//        List<SuperBeing> members = new ArrayList<>();
-//        members.add(sb);
-//        members.add(sb2);
-//        
-//        Location loc = new Location();
-//        loc.setName("Legion of Doom");
-//        loc.setDescription("Bad guy party palace");
-//        loc.setAddressLine1("123 1st Street");
-//        loc.setAddressLine2("Apt 2");
-//        loc.setCity("Apple Valley");
-//        loc.setRegion("MN");
-//        loc.setPostalCode("55111");
-//        loc.setCountry("USA");
-//        loc.setLatitude(100.5);
-//        loc.setLongitude(75.75);
-//        dao.addLocation(loc);
-//        
-//        Location loc2 = new Location();
-//        loc2.setName("Hall of Justice");
-//        loc2.setDescription("Good Guy Spa");
-//        loc2.setAddressLine1("456 4th Ave");
-//        loc2.setAddressLine2(null);
-//        loc2.setCity("Metropolis");
-//        loc2.setRegion("Fake Region");
-//        loc2.setPostalCode("99999");
-//        loc2.setCountry("USA");
-//        loc2.setLatitude(60.60);
-//        loc2.setLongitude(90.11);
-//        dao.addLocation(loc2);
-//        
-//        Organization org = new Organization();
-//        org.setName("Justice League");
-//        org.setLocation(loc);
-//        org.setPhone("111-111-1111");
-//        org.setEmail("sup@jl.com");
-//        org.setMembers(members);
-//        dao.addOrganization(org);
-//        
-//        Organization org2 = new Organization();
-//        org2.setName("Temple of Doom");
-//        org2.setLocation(loc2);
-//        org2.setPhone("222-222-2222");
-//        org2.setEmail("me@doom.com");
-//        org2.setMembers(members);
-//        dao.addOrganization(org2);
-//        
-//        List<Organization> orgList = 
-//                dao.getAllOrganizationsBySuperId(sb.getSuperId());
-//        
-//        assertEquals(org, orgList.get(0));
-//        assertEquals(org2, orgList.get(1));
+        Power power = new Power();
+        power.setDescription("Super Strength");
+        List<Power> powers = new ArrayList<>();
+        powers.add(power);
+        
+        SuperBeing sb = new SuperBeing();
+        sb.setName("B-Man");
+        sb.setDescription("Can beat up Batman and Superman at same time");
+        sb.setIdentity("Blake Edwards");
+        sb.setPowers(powers);
+        
+        dao.addSuperBeing(sb);
+        
+        Power power2 = new Power();
+        power2.setDescription("Super Cool");
+        List<Power> powers2 = new ArrayList<>();
+        powers2.add(power2);
+        
+        SuperBeing sb2 = new SuperBeing();
+        sb2.setName("Iceman");
+        sb2.setDescription("Retired crime fighter");
+        sb2.setIdentity("Chuck Lidell");
+        sb2.setPowers(powers2);
+        
+        dao.addSuperBeing(sb2);
+        
+        List<SuperBeing> members = new ArrayList<>();
+        members.add(sb);
+        members.add(sb2);
+        
+        Location loc = new Location();
+        loc.setName("Legion of Doom");
+        loc.setDescription("Bad guy party palace");
+        loc.setAddressLine1("123 1st Street");
+        loc.setAddressLine2("Apt 2");
+        loc.setCity("Apple Valley");
+        loc.setRegion("MN");
+        loc.setPostalCode("55111");
+        loc.setCountry("USA");
+        loc.setLatitude(100.5);
+        loc.setLongitude(75.75);
+        dao.addLocation(loc);
+        
+        Location loc2 = new Location();
+        loc2.setName("Hall of Justice");
+        loc2.setDescription("Good Guy Spa");
+        loc2.setAddressLine1("456 4th Ave");
+        loc2.setAddressLine2(null);
+        loc2.setCity("Metropolis");
+        loc2.setRegion("Fake Region");
+        loc2.setPostalCode("99999");
+        loc2.setCountry("USA");
+        loc2.setLatitude(60.60);
+        loc2.setLongitude(90.11);
+        dao.addLocation(loc2);
+        
+        Organization org = new Organization();
+        org.setName("Justice League");
+        org.setLocation(loc);
+        org.setPhone("111-111-1111");
+        org.setEmail("sup@jl.com");
+        org.setMembers(members);
+        dao.addOrganization(org);
+        
+        Organization org2 = new Organization();
+        org2.setName("Temple of Doom");
+        org2.setLocation(loc2);
+        org2.setPhone("222-222-2222");
+        org2.setEmail("me@doom.com");
+        org2.setMembers(members);
+        dao.addOrganization(org2);
+        
+        List<Organization> orgList = 
+                dao.getAllOrganizationsBySuperId(sb.getSuperId());
+        
+        assertEquals(org, orgList.get(0));
+        assertEquals(org2, orgList.get(1));
+    }
+    
+    @Test
+    public void testGetMostRecentSightings() {
+        Location loc = new Location();
+        loc.setName("Test Location");
+        loc.setDescription("Test Loc Description");
+        loc.setAddressLine1("123 Test Street");
+        loc.setAddressLine2("Test Apt 2");
+        loc.setCity("Test City");
+        loc.setRegion("Test Region");
+        loc.setPostalCode("11111");
+        loc.setCountry("USA");
+        loc.setLatitude(60);
+        loc.setLongitude(120);
+        dao.addLocation(loc);
+        
+        List<Power> powers = new ArrayList<>();
+        Power p1 = new Power();
+        p1.setDescription("Test Power");
+        powers.add(p1);
+        
+        List<SuperBeing> beings = new ArrayList<>();
+        SuperBeing sb = new SuperBeing();
+        sb.setName("Test Super Name");
+        sb.setDescription("Test Super Description");
+        sb.setIdentity("Test Identity");
+        sb.setPowers(powers);
+        beings.add(sb);
+        dao.addSuperBeing(sb);
+        
+        Sighting s1 = new Sighting(loc, LocalDate.of(2018, 1, 1), beings);
+        Sighting s2 = new Sighting(loc, LocalDate.of(2017, 1, 1), beings);
+        Sighting s3 = new Sighting(loc, LocalDate.of(2016, 1, 1), beings);
+        Sighting s4 = new Sighting(loc, LocalDate.of(2015, 1, 1), beings);
+        Sighting s5 = new Sighting(loc, LocalDate.of(2014, 1, 1), beings);
+        Sighting s6 = new Sighting(loc, LocalDate.of(2013, 1, 1), beings);
+        Sighting s7 = new Sighting(loc, LocalDate.of(2012, 1, 1), beings);
+        Sighting s8 = new Sighting(loc, LocalDate.of(2011, 1, 1), beings);
+        Sighting s9 = new Sighting(loc, LocalDate.of(2010, 1, 1), beings);
+        Sighting s10 = new Sighting(loc, LocalDate.of(2009, 1, 1), beings);
+        Sighting s11 = new Sighting(loc, LocalDate.of(2008, 1, 1), beings);
+        Sighting s12 = new Sighting(loc, LocalDate.of(2007, 1, 1), beings);
+        Sighting s13 = new Sighting(loc, LocalDate.of(2006, 1, 1), beings);
+        Sighting s14 = new Sighting(loc, LocalDate.of(2005, 1, 1), beings);
+        Sighting s15 = new Sighting(loc, LocalDate.of(2004, 1, 1), beings);
+        
+        dao.addSighting(s1);
+        dao.addSighting(s2);
+        dao.addSighting(s3);
+        dao.addSighting(s4);
+        dao.addSighting(s5);
+        dao.addSighting(s6);
+        dao.addSighting(s7);
+        dao.addSighting(s8);
+        dao.addSighting(s9);
+        dao.addSighting(s10);
+        dao.addSighting(s11);
+        dao.addSighting(s12);
+        dao.addSighting(s13);
+        dao.addSighting(s14);
+        dao.addSighting(s15);
+        
+        List<Sighting> sightingList = new ArrayList<>();
+        sightingList = dao.getMostRecentSightings();
+        
+        assertEquals(10, sightingList.size());
+        assertEquals(s1, sightingList.get(0));
+        assertEquals(s2, sightingList.get(1));
+        assertEquals(s3, sightingList.get(2));
+        assertEquals(s4, sightingList.get(3));
+        assertEquals(s5, sightingList.get(4));
+        assertEquals(s6, sightingList.get(5));
+        assertEquals(s7, sightingList.get(6));
+        assertEquals(s8, sightingList.get(7));
+        assertEquals(s9, sightingList.get(8));
+        assertEquals(s10, sightingList.get(9));
+        
     }
 }
