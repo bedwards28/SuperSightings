@@ -6,6 +6,7 @@
 package com.sg.supersightings.service;
 
 import com.sg.supersightings.dao.SuperBeingDao;
+import com.sg.supersightings.dao.SuperBeingPersistenceException;
 import com.sg.supersightings.model.Location;
 import com.sg.supersightings.model.Organization;
 import com.sg.supersightings.model.Power;
@@ -24,162 +25,162 @@ public class SuperSightingsServiceLayerImpl implements SuperSightingsServiceLaye
     
     private SuperBeingDao dao;
 
-    public void setSuperBeingDao(SuperBeingDao dao) {
+    public void setSuperBeingDao(SuperBeingDao dao) throws SuperBeingPersistenceException {
         this.dao = dao;
     }
 
     @Override
-    public void addSuperBeing(SuperBeing being) {
-        dao.addSuperBeing(being);
+    public SuperBeing addSuperBeing(SuperBeing being) throws SuperBeingPersistenceException {
+        return dao.addSuperBeing(being);
     }
 
     @Override
-    public SuperBeing deleteSuperBeing(int superId) {
+    public int deleteSuperBeing(int superId) throws SuperBeingPersistenceException {
         return dao.deleteSuperBeing(superId);
     }
 
     @Override
-    public SuperBeing updateSuperBeing(SuperBeing being) {
+    public SuperBeing updateSuperBeing(SuperBeing being) throws SuperBeingPersistenceException {
         return dao.updateSuperBeing(being);
     }
 
     @Override
-    public SuperBeing getSuperBeingById(int id) {
+    public SuperBeing getSuperBeingById(int id) throws SuperBeingPersistenceException {
         return dao.getSuperBeingById(id);
     }
 
     @Override
-    public List<SuperBeing> getAllSuperBeings() {
+    public List<SuperBeing> getAllSuperBeings() throws SuperBeingPersistenceException {
         return dao.getAllSuperBeings();
     }
 
     @Override
-    public List<SuperBeing> getAllOrganizationMembers(int orgId) {
+    public List<SuperBeing> getAllOrganizationMembers(int orgId) throws SuperBeingPersistenceException {
         return dao.getAllOrganizationMembers(orgId);
     }
 
     @Override
-    public Power addPower(Power power) {
+    public Power addPower(Power power) throws SuperBeingPersistenceException {
         return dao.addPower(power);
     }
 
     @Override
-    public void deletePower(int powerId) {
-        dao.deletePower(powerId);
+    public int deletePower(int powerId) throws SuperBeingPersistenceException {
+        return dao.deletePower(powerId);
     }
 
     @Override
-    public Power updatePower(Power power) {
+    public Power updatePower(Power power) throws SuperBeingPersistenceException {
         return dao.updatePower(power);
     }
 
     @Override
-    public Power getPowerById(int powerId) {
+    public Power getPowerById(int powerId) throws SuperBeingPersistenceException {
         return dao.getPowerById(powerId);
     }
 
     @Override
-    public Power getPowerByDescription(String description) {
+    public Power getPowerByDescription(String description) throws SuperBeingPersistenceException {
         return dao.getPowerByDescription(description);
     }
 
     @Override
-    public List<Power> getAllPowers() {
+    public List<Power> getAllPowers() throws SuperBeingPersistenceException {
         return dao.getAllPowers();
     }
 
     @Override
-    public void addLocation(Location location) {
-        dao.addLocation(location);
+    public Location addLocation(Location location) throws SuperBeingPersistenceException {
+        return dao.addLocation(location);
     }
 
     @Override
-    public void deleteLocationById(int locationId) {
-        dao.deleteLocationById(locationId);
+    public int deleteLocationById(int locationId) throws SuperBeingPersistenceException {
+        return dao.deleteLocationById(locationId);
     }
 
     @Override
-    public void updateLocation(Location location) {
-        dao.updateLocation(location);
+    public Location updateLocation(Location location) throws SuperBeingPersistenceException {
+        return dao.updateLocation(location);
     }
 
     @Override
-    public Location getLocationById(int locationId) {
+    public Location getLocationById(int locationId) throws SuperBeingPersistenceException {
         return dao.getLocationById(locationId);
     }
 
     @Override
-    public List<Location> getAllLocations() {
+    public List<Location> getAllLocations() throws SuperBeingPersistenceException {
         return dao.getAllLocations();
     }
 
     @Override
-    public List<Location> getAllLocationsBySuperId(int superId) {
+    public List<Location> getAllLocationsBySuperId(int superId) throws SuperBeingPersistenceException {
         return dao.getAllLocationsBySuperId(superId);
     }
 
     @Override
-    public void addSighting(Sighting sighting) {
-        dao.addSighting(sighting);
+    public Sighting addSighting(Sighting sighting) throws SuperBeingPersistenceException {
+        return dao.addSighting(sighting);
     }
 
     @Override
-    public void deleteSighting(int sightingId) {
-        dao.deleteSighting(sightingId);
+    public int deleteSighting(int sightingId) throws SuperBeingPersistenceException {
+        return dao.deleteSighting(sightingId);
     }
 
     @Override
-    public void updateSighting(Sighting sighting) {
-        dao.updateSighting(sighting);
+    public Sighting updateSighting(Sighting sighting) throws SuperBeingPersistenceException {
+        return dao.updateSighting(sighting);
     }
 
     @Override
-    public Sighting getSightingById(int sightingId) {
+    public Sighting getSightingById(int sightingId) throws SuperBeingPersistenceException {
         return dao.getSightingById(sightingId);
     }
 
     @Override
-    public List<Sighting> getAllSightings() {
+    public List<Sighting> getAllSightings() throws SuperBeingPersistenceException {
         return dao.getAllSightings();
     }
 
     @Override
-    public List<Sighting> getAllSightingsByDate(LocalDate date) {
+    public List<Sighting> getAllSightingsByDate(LocalDate date) throws SuperBeingPersistenceException {
         return dao.getAllSightingsByDate(date);
     }
 
     @Override
-    public void addOrganization(Organization org) {
-        dao.addOrganization(org);
+    public Organization addOrganization(Organization org) throws SuperBeingPersistenceException {
+        return dao.addOrganization(org);
     }
 
     @Override
-    public void deleteOrganization(int orgId) {
-        dao.deleteOrganization(orgId);
+    public int deleteOrganization(int orgId) throws SuperBeingPersistenceException {
+        return dao.deleteOrganization(orgId);
     }
 
     @Override
-    public void updateOrganization(Organization org) {
-        dao.updateOrganization(org);
+    public Organization updateOrganization(Organization org) throws SuperBeingPersistenceException {
+        return dao.updateOrganization(org);
     }
 
     @Override
-    public Organization getOrganizationById(int orgId) {
+    public Organization getOrganizationById(int orgId) throws SuperBeingPersistenceException {
         return dao.getOrganizationById(orgId);
     }
 
     @Override
-    public List<Organization> getAllOrganizations() {
+    public List<Organization> getAllOrganizations() throws SuperBeingPersistenceException {
         return dao.getAllOrganizations();
     }
 
     @Override
-    public List<Organization> getAllOrganizationsBySuperId(int superId) {
+    public List<Organization> getAllOrganizationsBySuperId(int superId) throws SuperBeingPersistenceException {
         return dao.getAllOrganizationsBySuperId(superId);
     }
 
     @Override
-    public List<Sighting> getMostRecentSightings() {
+    public List<Sighting> getMostRecentSightings() throws SuperBeingPersistenceException {
         return dao.getMostRecentSightings();
     }
     

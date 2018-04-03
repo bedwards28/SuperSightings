@@ -1,5 +1,6 @@
 package com.sg.supersightings.controller;
 
+import com.sg.supersightings.dao.SuperBeingPersistenceException;
 import com.sg.supersightings.model.Location;
 import com.sg.supersightings.model.Organization;
 import com.sg.supersightings.model.Power;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.swing.JOptionPane;
 import javax.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -39,20 +41,47 @@ public class SuperSightingsController {
     @GetMapping("/recentsightings")
     @ResponseBody
     public List<Sighting> getRecentSightings() {
-        return service.getMostRecentSightings();
+        try {
+            return service.getMostRecentSightings();
+        } catch (SuperBeingPersistenceException e) {
+            JOptionPane.showMessageDialog(null, "Unable to load news feed.");
+        }
+        
+        return null;
     }
     
     @GetMapping("/index")
     public String displayIndex(Model model) {
-        List<Sighting> sightingList = service.getMostRecentSightings();
+        List<Sighting> sightingList = new ArrayList<>();
+        
+        try {
+            sightingList = service.getMostRecentSightings();
+        } catch (SuperBeingPersistenceException e) {
+            JOptionPane.showMessageDialog(null, "Unable to load news feed.");
+        }
+        
         model.addAttribute("sightingList", sightingList);
         return "index";
     }
 
     @GetMapping("/supers")
     public String displaySuperBeingsPage(Model model) {
-        List<SuperBeing> superList = service.getAllSuperBeings();
-        List<Power> powerList = service.getAllPowers();
+        List<SuperBeing> superList;
+        List<Power> powerList;
+        try {
+            superList = service.getAllSuperBeings();
+        } catch (SuperBeingPersistenceException e) {
+            JOptionPane.showMessageDialog(null, "Unable to load supers list.");
+            superList = new ArrayList<>();
+        }
+        
+        try {
+            powerList = service.getAllPowers();
+        } catch (SuperBeingPersistenceException e) {
+            JOptionPane.showMessageDialog(null, "Unable to load powers list.");
+            powerList = new ArrayList<>();
+        }
+        
         SuperBeing sb = new SuperBeing();
         model.addAttribute("superBeing", sb);
         model.addAttribute("superList", superList);
@@ -67,7 +96,12 @@ public class SuperSightingsController {
         String superIdParameter = request.getParameter("superId");
         int superId = Integer.parseInt(superIdParameter);
 
-        SuperBeing sb = service.getSuperBeingById(superId);
+        SuperBeing sb = new SuperBeing();
+        try {
+            sb = service.getSuperBeingById(superId);
+        } catch (SuperBeingPersistenceException e) {
+            JOptionPane.showMessageDialog(null, "Unable to load super being.");
+        }
 
         model.addAttribute("superBeing", sb);
 
@@ -93,39 +127,67 @@ public class SuperSightingsController {
             }
 
             sb.setPowers(newPowers);
-        } catch (NullPointerException e) {
+        } catch (SuperBeingPersistenceException e) {
+            
+        } catch (NullPointerException e ) {
             // do nothing, hasErrors will return errors
         }
+        try {
+            if (result.hasErrors()) {
+                model.addAttribute("powerList", service.getAllPowers());
+                model.addAttribute("superList", service.getAllSuperBeings());
+                model.addAttribute("superBeing", sb);
+                return "superBeings";
+            }
 
-        if (result.hasErrors()) {
-            model.addAttribute("powerList", service.getAllPowers());
-            model.addAttribute("superList", service.getAllSuperBeings());
-            model.addAttribute("superBeing", sb);
-            return "superBeings";
+            service.addSuperBeing(sb);
+        } catch (SuperBeingPersistenceException e) {
+            JOptionPane.showMessageDialog(null, "Unable to create super being.");
         }
-
-        service.addSuperBeing(sb);
-
+        
         return "redirect:supers";
     }
 
     @GetMapping("/deleteSuperBeing")
-    public String deleteSuperBeing(HttpServletRequest request) {
-        String superIdParameter = request.getParameter("superId");
-        int superId = Integer.parseInt(superIdParameter);
-        service.deleteSuperBeing(superId);
+    public String deleteSuperBeing(@RequestParam("superId") int superId) {
+        try {
+            int success = service.deleteSuperBeing(superId);
+            
+            if (success == 0) {
+                JOptionPane.showMessageDialog(
+                        null, "Unable to delete super being due to relationship with "
+                                + "organizations and sightings.");
+            }
+        } catch (SuperBeingPersistenceException e) {
+            JOptionPane.showMessageDialog(
+                        null, "Unable to delete super being due to relationship with "
+                                + "organizations and sightings.");
+        }
+        
         return "redirect:supers";
     }
 
     @GetMapping("/editSuperBeingForm")
     public String displayEditSuperBeingForm(
-            HttpServletRequest request, Model model) {
+            @RequestParam("superId") int superId, Model model) {
 
-        String superIdParameter = request.getParameter("superId");
-        int superId = Integer.parseInt(superIdParameter);
-        SuperBeing sb = service.getSuperBeingById(superId);
+        SuperBeing sb = new SuperBeing();
+        List<Power> powerList = new ArrayList<>();
+        
+        try {
+            sb = service.getSuperBeingById(superId);
+        } catch (SuperBeingPersistenceException e) {
+            JOptionPane.showMessageDialog(null, "Unable to edit super being.");
+        }
+        
+        try {
+            powerList = service.getAllPowers();
+        } catch (SuperBeingPersistenceException e) {
+            JOptionPane.showMessageDialog(null, "Unable to get power list.");
+        }
+        
         model.addAttribute("superBeing", sb);
-        model.addAttribute("powerList", service.getAllPowers());
+        model.addAttribute("powerList", powerList);
         return "editSuperBeingForm";
     }
 
@@ -138,51 +200,80 @@ public class SuperSightingsController {
         List<Power> powers = sb.getPowers();
         List<Power> newPowers = new ArrayList<>();
 
-        if (powers.size() > 0) {
-            for (Power currentPower : powers) {
-                Power newPower
-                        = service.getPowerByDescription(currentPower.getDescription());
+        try {
+            if (powers.size() > 0) {
+                for (Power currentPower : powers) {
+                    Power newPower
+                            = service.getPowerByDescription(currentPower.getDescription());
 
-                newPowers.add(newPower);
+                    newPowers.add(newPower);
+                }
+
+                sb.setPowers(newPowers);
             }
+        } catch (Exception e) {
+            
+        }
 
-            sb.setPowers(newPowers);
+        List<Power> powerList = new ArrayList<>();
+        
+        try {
+           powerList = service.getAllPowers();
+        } catch (SuperBeingPersistenceException e) {
+            JOptionPane.showMessageDialog(null, "Unable to get power list.");
         }
 
         if (result.hasErrors()) {
-            model.addAttribute("powerList", service.getAllPowers());
+            model.addAttribute("powerList", powerList);
             model.addAttribute("superBeing", sb);
             return "editSuperBeingForm";
         }
 
-        service.updateSuperBeing(sb);
+        try {
+            service.updateSuperBeing(sb);
+        } catch (SuperBeingPersistenceException e) {
+            JOptionPane.showMessageDialog(null, "Unable to update super being.");
+        }
 
         return "redirect:supers";
     }
 
     @GetMapping("/organizations")
     public String displayOrganizationsPage(Model model) {
-        List<Organization> orgList = service.getAllOrganizations();
-        List<Location> locationList = service.getAllLocations();
-        List<SuperBeing> superList = service.getAllSuperBeings();
+        List<Organization> orgList = new ArrayList<>();
+        List<Location> locationList = new ArrayList<>();
+        List<SuperBeing> superList = new ArrayList<>();
         Organization organization = new Organization();
-
+        
+        try {
+            orgList = service.getAllOrganizations();
+            locationList = service.getAllLocations();
+            superList = service.getAllSuperBeings();
+            
+        } catch (SuperBeingPersistenceException e) {
+            JOptionPane.showMessageDialog(null, "Error loading organization page.");
+        }
+        
         model.addAttribute("orgList", orgList);
         model.addAttribute("locationList", locationList);
         model.addAttribute("superList", superList);
         model.addAttribute("organization", organization);
+        
         return "organizations";
     }
 
     @GetMapping("/organizationDetails")
     public String displayOrganizationDetails(
-            HttpServletRequest request, Model model) {
+            @RequestParam("organizationId") int organizationId, Model model) {
 
-        String organizationIdParameter = request.getParameter("organizationId");
-        int organizationId = Integer.parseInt(organizationIdParameter);
-
-        Organization org = service.getOrganizationById(organizationId);
-
+        Organization org = new Organization();
+        
+        try {
+            org = service.getOrganizationById(organizationId);
+        } catch (SuperBeingPersistenceException e) {
+            JOptionPane.showMessageDialog(null, "Error loading organization details.");
+        }
+        
         model.addAttribute("organization", org);
 
         return "organizationDetails";
@@ -197,44 +288,64 @@ public class SuperSightingsController {
             Model model) {
 
         // Insert location into organization
-        Location location = service.getLocationById(locationId);
+        Location location = new Location();
+        try {
+            location = service.getLocationById(locationId);
+        } catch (SuperBeingPersistenceException e) {
+            JOptionPane.showMessageDialog(null, "Error creating organization.");
+        }
+        
         organization.setLocation(location);
 
         // Insert members into organization
         List<SuperBeing> members = new ArrayList<>();
+        SuperBeing sb;
 
         if (memberIdList != null) {
             for (String currentIdString : memberIdList) {
                 int currentId = Integer.parseInt(currentIdString);
-                SuperBeing sb = service.getSuperBeingById(currentId);
-                members.add(sb);
+                try {
+                    sb = service.getSuperBeingById(currentId);
+                    members.add(sb);
+                } catch (SuperBeingPersistenceException e) {
+                    JOptionPane.showMessageDialog(null, "Error creating organization.");
+                }
+                
             }
         }
 
         organization.setMembers(members);
 
-        if (result.hasErrors()) {
-            List<Organization> orgList = service.getAllOrganizations();
-            List<Location> locationList = service.getAllLocations();
-            List<SuperBeing> superList = service.getAllSuperBeings();
+        try {
+            if (result.hasErrors()) {
+                List<Organization> orgList = service.getAllOrganizations();
+                List<Location> locationList = service.getAllLocations();
+                List<SuperBeing> superList = service.getAllSuperBeings();
 
-            model.addAttribute("orgList", orgList);
-            model.addAttribute("locationList", locationList);
-            model.addAttribute("superList", superList);
-            model.addAttribute("organization", organization);
-            return "organizations";
+                model.addAttribute("orgList", orgList);
+                model.addAttribute("locationList", locationList);
+                model.addAttribute("superList", superList);
+                model.addAttribute("organization", organization);
+                return "organizations";
+            }
+
+            service.addOrganization(organization);
+        } catch (SuperBeingPersistenceException e) {
+            JOptionPane.showMessageDialog(null, "Error creating organization members.");
         }
-
-        service.addOrganization(organization);
+        
 
         return "redirect:organizations";
     }
 
     @GetMapping("/deleteOrganization")
-    public String deleteOrganization(HttpServletRequest request) {
-        String organizationIdParameter = request.getParameter("organizationId");
-        int organizationId = Integer.parseInt(organizationIdParameter);
-        service.deleteOrganization(organizationId);
+    public String deleteOrganization(@RequestParam("organizationId") int organizationId) {
+        try {
+            service.deleteOrganization(organizationId);
+        } catch (SuperBeingPersistenceException e) {
+            JOptionPane.showMessageDialog(null, "Error deleting organization.");
+        }
+        
         return "redirect:organizations";
     }
 
@@ -242,16 +353,21 @@ public class SuperSightingsController {
     public String displayEditOrganizationForm(
             HttpServletRequest request, Model model) {
         
-        String organizationIdParamter = request.getParameter("organizationId");
-        int organizationId = Integer.parseInt(organizationIdParamter);
-        Organization organization = service.getOrganizationById(organizationId);
+        try {
+            String organizationIdParamter = request.getParameter("organizationId");
+            int organizationId = Integer.parseInt(organizationIdParamter);
+            Organization organization = service.getOrganizationById(organizationId);
+
+            List<Location> locationList = service.getAllLocations();
+            List<SuperBeing> superList = service.getAllSuperBeings();
+
+            model.addAttribute("superList", superList);
+            model.addAttribute("locationList", locationList);
+            model.addAttribute("organization", organization);
+        } catch (SuperBeingPersistenceException e) {
+            JOptionPane.showMessageDialog(null, "Error displayEditOrganizationForm.");
+        }
         
-        List<Location> locationList = service.getAllLocations();
-        List<SuperBeing> superList = service.getAllSuperBeings();
-        
-        model.addAttribute("superList", superList);
-        model.addAttribute("locationList", locationList);
-        model.addAttribute("organization", organization);
         return "editOrganizationForm";
     }
     
@@ -263,46 +379,55 @@ public class SuperSightingsController {
             @RequestParam(value = "memberIds", required = false) List<String> memberIdList,
             Model model) {
         
-        // Insert location into organization
-        Location location = service.getLocationById(locationId);
-        organization.setLocation(location);
+        try {
+            // Insert location into organization
+            Location location = service.getLocationById(locationId);
+            organization.setLocation(location);
 
-        // Insert members into organization
-        List<SuperBeing> members = new ArrayList<>();
+            // Insert members into organization
+            List<SuperBeing> members = new ArrayList<>();
 
-        if (memberIdList != null) {
-            for (String currentIdString : memberIdList) {
-                int currentId = Integer.parseInt(currentIdString);
-                SuperBeing sb = service.getSuperBeingById(currentId);
-                members.add(sb);
+            if (memberIdList != null) {
+                for (String currentIdString : memberIdList) {
+                    int currentId = Integer.parseInt(currentIdString);
+                    SuperBeing sb = service.getSuperBeingById(currentId);
+                    members.add(sb);
+                }
             }
+
+            organization.setMembers(members);
+
+            if (result.hasErrors()) {
+                List<Organization> orgList = service.getAllOrganizations();
+                List<Location> locationList = service.getAllLocations();
+                List<SuperBeing> superList = service.getAllSuperBeings();
+
+                model.addAttribute("orgList", orgList);
+                model.addAttribute("locationList", locationList);
+                model.addAttribute("superList", superList);
+                model.addAttribute("organization", organization);
+                return "editOrganizationForm";
+            }
+
+            service.updateOrganization(organization);
+        } catch (SuperBeingPersistenceException e) {
+            JOptionPane.showMessageDialog(null, "Error editOrganization.");
         }
-
-        organization.setMembers(members);
-
-        if (result.hasErrors()) {
-            List<Organization> orgList = service.getAllOrganizations();
-            List<Location> locationList = service.getAllLocations();
-            List<SuperBeing> superList = service.getAllSuperBeings();
-
-            model.addAttribute("orgList", orgList);
-            model.addAttribute("locationList", locationList);
-            model.addAttribute("superList", superList);
-            model.addAttribute("organization", organization);
-            return "editOrganizationForm";
-        }
-        
-        service.updateOrganization(organization);
         
         return "redirect:organizations";
     }
 
     @GetMapping("/locations")
     public String displayLocationsPage(Model model) {
-        List<Location> locationList = service.getAllLocations();
-        Location loc = new Location();
-        model.addAttribute("locationList", locationList);
-        model.addAttribute(loc);
+        try {
+            List<Location> locationList = service.getAllLocations();
+            Location loc = new Location();
+            model.addAttribute("locationList", locationList);
+            model.addAttribute(loc);
+        } catch (SuperBeingPersistenceException e) {
+            JOptionPane.showMessageDialog(null, "Error displayLocationsPage.");
+        }
+        
         return "locations";
     }
 
@@ -310,12 +435,16 @@ public class SuperSightingsController {
     public String displayLocationDetails(
             HttpServletRequest request, Model model) {
 
-        String locationIdParameter = request.getParameter("locationId");
-        int locationId = Integer.parseInt(locationIdParameter);
+        try {
+            String locationIdParameter = request.getParameter("locationId");
+            int locationId = Integer.parseInt(locationIdParameter);
 
-        Location location = service.getLocationById(locationId);
+            Location location = service.getLocationById(locationId);
 
-        model.addAttribute("location", location);
+            model.addAttribute("location", location);
+        } catch (SuperBeingPersistenceException e) {
+            JOptionPane.showMessageDialog(null, "Error displayLocationDetails.");
+        }   
 
         return "locationDetails";
     }
@@ -326,32 +455,44 @@ public class SuperSightingsController {
             BindingResult result,
             Model model) {
 
-        if (result.hasErrors()) {
-            model.addAttribute("locationList", service.getAllLocations());
-            return "locations";
+        try {
+            if (result.hasErrors()) {
+                model.addAttribute("locationList", service.getAllLocations());
+                return "locations";
+            }
+
+            service.addLocation(location);
+
+        } catch (SuperBeingPersistenceException e) {
+            JOptionPane.showMessageDialog(null, "Error createLocation.");
         }
-
-        service.addLocation(location);
-
+        
         return "redirect:locations";
     }
 
     @GetMapping("/deleteLocation")
-    public String deleteLocation(HttpServletRequest request) {
-        String locationIdParameter = request.getParameter("locationId");
-        int locationId = Integer.parseInt(locationIdParameter);
-        service.deleteLocationById(locationId);
+    public String deleteLocation(@RequestParam("locationId") int locationId) {
+        try {
+            service.deleteLocationById(locationId);
+        } catch (SuperBeingPersistenceException e) {
+            JOptionPane.showMessageDialog(null, "Location is tied to an organiztion.\n"
+                    + "Unable to delete.");
+        }
+        
         return "redirect:locations";
     }
 
     @GetMapping("/editLocationForm")
     public String displayEditLocationForm(
-            HttpServletRequest request, Model model) {
+            @RequestParam("locationId") int locationId, Model model) {
 
-        String locationIdParameter = request.getParameter("locationId");
-        int locationId = Integer.parseInt(locationIdParameter);
-        Location location = service.getLocationById(locationId);
-        model.addAttribute("location", location);
+        try {
+            Location location = service.getLocationById(locationId);
+            model.addAttribute("location", location);
+        } catch (SuperBeingPersistenceException e) {
+            JOptionPane.showMessageDialog(null, "Error displayEditLocation.");
+        }
+        
         return "editLocationForm";
     }
 
@@ -366,28 +507,42 @@ public class SuperSightingsController {
             return "editLocationForm";
         }
 
-        service.updateLocation(location);
-
+        try {
+            service.updateLocation(location);
+        } catch (SuperBeingPersistenceException e) {
+            JOptionPane.showMessageDialog(null, "Error editLocation.");
+        }
+        
         return "redirect:locations";
     }
 
     @GetMapping("/sightings")
     public String displaySightingsPage(Model model) {
-        List<Sighting> sightingList = service.getAllSightings();
-        List<SuperBeing> superList = service.getAllSuperBeings();
-        List<Location> locationList = service.getAllLocations();
-        model.addAttribute("sightingList", sightingList);
-        model.addAttribute("superList", superList);
-        model.addAttribute("locationList", locationList);
+        try {
+            List<Sighting> sightingList = service.getAllSightings();
+            List<SuperBeing> superList = service.getAllSuperBeings();
+            List<Location> locationList = service.getAllLocations();
+            model.addAttribute("sightingList", sightingList);
+            model.addAttribute("superList", superList);
+            model.addAttribute("locationList", locationList);
+        } catch (SuperBeingPersistenceException e) {
+            JOptionPane.showMessageDialog(null, "Error displaySightingsPage.");
+        }
+        
         return "sightings";
     }
 
     @GetMapping("/sightingDetails")
-    public String displaySightingDetails(HttpServletRequest request, Model model) {
-        String sightingIdParameter = request.getParameter("sightingId");
-        int sightingId = Integer.parseInt(sightingIdParameter);
-        Sighting sighting = service.getSightingById(sightingId);
-        model.addAttribute("sighting", sighting);
+    public String displaySightingDetails(
+            @RequestParam("sightingId") int sightingId, 
+            Model model) {
+        try {
+            Sighting sighting = service.getSightingById(sightingId);
+            model.addAttribute("sighting", sighting);
+        } catch (SuperBeingPersistenceException e) {
+            JOptionPane.showMessageDialog(null, "Error displaySightingDetails.");
+        }
+        
         return "sightingDetails";
     }
     
@@ -398,37 +553,45 @@ public class SuperSightingsController {
             @RequestParam("date") String date,
             Model model) {
         
-        Sighting sighting = new Sighting();
+        try {
+            Sighting sighting = new Sighting();
         
-        // Insert location into sighting
-        Location location = service.getLocationById(locationId);
-        sighting.setLocation(location);
-        
-        // Insert members into organization
-        List<SuperBeing> supers = new ArrayList<>();
+            // Insert location into sighting
+            Location location = service.getLocationById(locationId);
+            sighting.setLocation(location);
 
-        if (superIdList != null) {
-            for (String currentIdString : superIdList) {
-                int currentId = Integer.parseInt(currentIdString);
-                SuperBeing sb = service.getSuperBeingById(currentId);
-                supers.add(sb);
+            // Insert members into organization
+            List<SuperBeing> supers = new ArrayList<>();
+
+            if (superIdList != null) {
+                for (String currentIdString : superIdList) {
+                    int currentId = Integer.parseInt(currentIdString);
+                    SuperBeing sb = service.getSuperBeingById(currentId);
+                    supers.add(sb);
+                }
             }
+
+            sighting.setSuperBeings(supers);
+
+            LocalDate newDate = LocalDate.parse(date);
+
+            sighting.setDate(newDate);
+
+            service.addSighting(sighting);
+        } catch (SuperBeingPersistenceException e) {
+            JOptionPane.showMessageDialog(null, "Error createSighting.");
         }
-        
-        sighting.setSuperBeings(supers);
-        
-        LocalDate newDate = LocalDate.parse(date);
-        
-        sighting.setDate(newDate);
-        
-        service.addSighting(sighting);
         
         return "redirect:sightings";
     }
     
     @GetMapping("/deleteSighting")
     public String deleteSighting(@RequestParam("sightingId") int id) {
-        service.deleteSighting(id);
+        try {
+            service.deleteSighting(id);
+        } catch (SuperBeingPersistenceException e) {
+            JOptionPane.showMessageDialog(null, "Error deleteSighting.");
+        }
         return "redirect:sightings";
     }
     
@@ -437,12 +600,17 @@ public class SuperSightingsController {
             @RequestParam("sightingId") int id, 
             Model model) {
         
-        Sighting sighting = service.getSightingById(id);
-        List<Location> locationList = service.getAllLocations();
-        List<SuperBeing> superList = service.getAllSuperBeings();
-        model.addAttribute("sighting", sighting);
-        model.addAttribute("locationList", locationList);
-        model.addAttribute("superList", superList);
+        try {
+            Sighting sighting = service.getSightingById(id);
+            List<Location> locationList = service.getAllLocations();
+            List<SuperBeing> superList = service.getAllSuperBeings();
+            model.addAttribute("sighting", sighting);
+            model.addAttribute("locationList", locationList);
+            model.addAttribute("superList", superList);
+        } catch (SuperBeingPersistenceException e) {
+            JOptionPane.showMessageDialog(null, "Error displaySightingForm.");
+        }
+        
         return "editSightingForm";
     }
     
@@ -454,27 +622,32 @@ public class SuperSightingsController {
             @RequestParam("date") String date,
             Model model) {
         
-        Sighting sighting = new Sighting();
+        try {
+            Sighting sighting = new Sighting();
         
-        sighting.setSightingId(sightingId);
-        
-        Location location = service.getLocationById(locationId);
-        sighting.setLocation(location);
-        
-        List<SuperBeing> supers = new ArrayList<>();
-        if (superIdList != null) {
-            for (String currentIdString : superIdList) {
-                int currentId = Integer.parseInt(currentIdString);
-                SuperBeing sb = service.getSuperBeingById(currentId);
-                supers.add(sb);
+            sighting.setSightingId(sightingId);
+
+            Location location = service.getLocationById(locationId);
+            sighting.setLocation(location);
+
+            List<SuperBeing> supers = new ArrayList<>();
+            if (superIdList != null) {
+                for (String currentIdString : superIdList) {
+                    int currentId = Integer.parseInt(currentIdString);
+                    SuperBeing sb = service.getSuperBeingById(currentId);
+                    supers.add(sb);
+                }
             }
+            sighting.setSuperBeings(supers);
+
+            LocalDate newDate = LocalDate.parse(date);
+            sighting.setDate(newDate);
+
+            service.updateSighting(sighting);
+        } catch (SuperBeingPersistenceException e) {
+            JOptionPane.showMessageDialog(null, "Error editSighting.");
         }
-        sighting.setSuperBeings(supers);
         
-        LocalDate newDate = LocalDate.parse(date);
-        sighting.setDate(newDate);
-        
-        service.updateSighting(sighting);
         
         return "redirect:sightings";
     }
@@ -483,8 +656,13 @@ public class SuperSightingsController {
     public String createPower(
             @RequestParam("power-description") String description) {
         
-        Power power = new Power(description);
-        service.addPower(power);
+        try {
+            Power power = new Power(description);
+            service.addPower(power);
+        } catch (SuperBeingPersistenceException e) {
+            JOptionPane.showMessageDialog(null, "Error createPower.");
+        }
+        
         return "redirect:supers";
     }
 

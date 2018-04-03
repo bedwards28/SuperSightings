@@ -93,11 +93,8 @@
                         <sf:hidden path="organizationId"/>
                     </div>
                     <div class="form-group">
-                        <div class="col-md-offset-4 col-md-4">
+                        <div class="col-md-offset-4 col-md-8">
                             <input type="submit" class="btn btn-primary" value="Update Organization"/>
-                        </div>
-                        <div class="col-md-4">
-                            <a href="addLocationForm"><input type="button" class="btn btn-primary" value="Add Location" /><a>
                         </div>
                     </div>
                 </sf:form>

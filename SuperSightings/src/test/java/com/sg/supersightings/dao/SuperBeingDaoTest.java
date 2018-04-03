@@ -51,31 +51,35 @@ public class SuperBeingDaoTest {
         
         dao = ctx.getBean("superBeingDao", SuperBeingDao.class);
         
-        List<Organization> orgs = dao.getAllOrganizations();
-        for (Organization currentOrg : orgs) {
-            dao.deleteOrganization(currentOrg.getOrganizationId());
+        try {
+            List<Organization> orgs = dao.getAllOrganizations();
+            for (Organization currentOrg : orgs) {
+                dao.deleteOrganization(currentOrg.getOrganizationId());
+            }
+
+            // delete sighting table entries
+            List<Sighting> sightings = dao.getAllSightings();
+            for (Sighting currentSighting : sightings) {
+                dao.deleteSighting(currentSighting.getSightingId());
+            }
+
+            List<Location> locations = dao.getAllLocations();
+            for (Location currentLocation : locations) {
+                dao.deleteLocationById(currentLocation.getLocationId());
+            }
+
+            List<Power> powers = dao.getAllPowers();
+            for (Power currentPower : powers) {
+                dao.deletePower(currentPower.getPowerId());
+            }
+
+            List<SuperBeing> supers = dao.getAllSuperBeings();
+            for (SuperBeing currentSuper : supers) {
+                dao.deleteSuperBeing(currentSuper.getSuperId());
+            }
+        } catch (Exception e) {
         }
         
-        // delete sighting table entries
-        List<Sighting> sightings = dao.getAllSightings();
-        for (Sighting currentSighting : sightings) {
-            dao.deleteSighting(currentSighting.getSightingId());
-        }
-        
-        List<Location> locations = dao.getAllLocations();
-        for (Location currentLocation : locations) {
-            dao.deleteLocationById(currentLocation.getLocationId());
-        }
-        
-        List<Power> powers = dao.getAllPowers();
-        for (Power currentPower : powers) {
-            dao.deletePower(currentPower.getPowerId());
-        }
-        
-        List<SuperBeing> supers = dao.getAllSuperBeings();
-        for (SuperBeing currentSuper : supers) {
-            dao.deleteSuperBeing(currentSuper.getSuperId());
-        }
     }
     
     @After
@@ -86,7 +90,7 @@ public class SuperBeingDaoTest {
      * Test of addSuperBeing method, of class SuperBeingDao.
      */
     @Test
-    public void testAddGetSuperBeing() {
+    public void testAddGetSuperBeing() throws SuperBeingPersistenceException {
         Power power = new Power();
         power.setDescription("Super Strength");
         List<Power> powers = new ArrayList<>();
@@ -108,7 +112,7 @@ public class SuperBeingDaoTest {
      * Test of deleteSuperBeing method, of class SuperBeingDao.
      */
     @Test
-    public void testDeleteSuperBeing() {
+    public void testDeleteSuperBeing() throws SuperBeingPersistenceException {
         Power power = new Power();
         power.setDescription("Super Strength");
         List<Power> powers = new ArrayList<>();
@@ -125,9 +129,8 @@ public class SuperBeingDaoTest {
         SuperBeing fromDao = dao.getSuperBeingById(sb.getSuperId());
         assertEquals(fromDao, sb);
         
-        dao.deleteSuperBeing(sb.getSuperId());
-        fromDao = dao.getSuperBeingById(sb.getSuperId());
-        assertNull(fromDao);
+        assertEquals(1, dao.deleteSuperBeing(sb.getSuperId()));
+        assertEquals(0, dao.deleteSuperBeing(sb.getSuperId()));
         
     }
 
@@ -135,7 +138,7 @@ public class SuperBeingDaoTest {
      * Test of updateSuperBeing method, of class SuperBeingDao.
      */
     @Test
-    public void testUpdateSuperBeing() {
+    public void testUpdateSuperBeing() throws SuperBeingPersistenceException {
         Power power = new Power();
         power.setDescription("Super Strength");
         List<Power> powers = new ArrayList<>();
@@ -170,7 +173,7 @@ public class SuperBeingDaoTest {
      * Test of getAllSuperBeings method, of class SuperBeingDao.
      */
     @Test
-    public void testGetAllSuperBeings() {
+    public void testGetAllSuperBeings() throws SuperBeingPersistenceException {
         Power power = new Power();
         power.setDescription("Super Strength");
         List<Power> powers = new ArrayList<>();
@@ -208,7 +211,7 @@ public class SuperBeingDaoTest {
      * Test getAllOrganizationMembers method
      */
     @Test
-    public void testGetAllOrganizationMembers() {
+    public void testGetAllOrganizationMembers() throws SuperBeingPersistenceException {
         Power power = new Power();
         power.setDescription("Test Power 1");
         List<Power> powers = new ArrayList<>();
@@ -273,7 +276,7 @@ public class SuperBeingDaoTest {
      * of class SuperBeingDao.
      */
     @Test
-    public void testAddGetPower() {
+    public void testAddGetPower() throws SuperBeingPersistenceException {
         Power p = new Power();
         p.setDescription("Super Strength");
         
@@ -290,7 +293,7 @@ public class SuperBeingDaoTest {
      * Test of deletePower method, of class SuperBeingDao.
      */
     @Test
-    public void testDeletePower() {
+    public void testDeletePower() throws SuperBeingPersistenceException {
         Power p = new Power();
         p.setDescription("Super Strength");
         dao.addPower(p);
@@ -298,16 +301,15 @@ public class SuperBeingDaoTest {
         Power fromDao = dao.getPowerById(p.getPowerId());
         assertEquals(fromDao, p);
         
-        dao.deletePower(p.getPowerId());
-        fromDao = dao.getPowerById(p.getPowerId());
-        assertNull(fromDao);
+        assertEquals(1, dao.deletePower(p.getPowerId()));
+        assertEquals(0, dao.deletePower(p.getPowerId()));
     }
 
     /**
      * Test of updatePower method, of class SuperBeingDao.
      */
     @Test
-    public void testUpdatePower() {
+    public void testUpdatePower() throws SuperBeingPersistenceException {
         Power p = new Power();
         p.setDescription("Super Strength");
         dao.addPower(p);
@@ -325,7 +327,7 @@ public class SuperBeingDaoTest {
      * Test of getAllPowers method, of class SuperBeingDao.
      */
     @Test
-    public void testGetAllPowers() {
+    public void testGetAllPowers() throws SuperBeingPersistenceException {
         Power p = new Power();
         p.setDescription("Super Strength");
         dao.addPower(p);
@@ -345,7 +347,7 @@ public class SuperBeingDaoTest {
      * Test addLocation, getLocationById methods
      */
     @Test
-    public void testAddGetLocation() {
+    public void testAddGetLocation() throws SuperBeingPersistenceException {
         Location loc = new Location();
         loc.setName("Legion of Doom");
         loc.setDescription("Bad guy party palace");
@@ -358,12 +360,9 @@ public class SuperBeingDaoTest {
         loc.setLatitude(100.5);
         loc.setLongitude(75.75);
         
-        Location fromDao = dao.getLocationById(loc.getLocationId());
-        assertNull(fromDao);
-        
         dao.addLocation(loc);
         
-        fromDao = dao.getLocationById(loc.getLocationId());
+        Location fromDao = dao.getLocationById(loc.getLocationId());
         assertEquals(fromDao, loc);
     }
     
@@ -371,7 +370,7 @@ public class SuperBeingDaoTest {
      * Test deleteLocation method
      */
     @Test
-    public void testDeleteLocation() {
+    public void testDeleteLocation() throws SuperBeingPersistenceException {
         Location loc = new Location();
         loc.setName("Legion of Doom");
         loc.setDescription("Bad guy party palace");
@@ -388,16 +387,15 @@ public class SuperBeingDaoTest {
         Location fromDao = dao.getLocationById(loc.getLocationId());
         assertEquals(fromDao, loc);
         
-        dao.deleteLocationById(loc.getLocationId());
-        fromDao = dao.getLocationById(loc.getLocationId());
-        assertNull(fromDao);
+        assertEquals(1, dao.deleteLocationById(loc.getLocationId()));
+        assertEquals(0, dao.deleteLocationById(loc.getLocationId()));
     }
     
     /**
      * Test updateLocation method
      */
     @Test
-    public void testUpdateLocation() {
+    public void testUpdateLocation() throws SuperBeingPersistenceException {
         Location loc = new Location();
         loc.setName("Legion of Doom");
         loc.setDescription("Bad guy party palace");
@@ -436,7 +434,7 @@ public class SuperBeingDaoTest {
      * Test getAllLocations method
      */
     @Test
-    public void testGetAllLocations() {
+    public void testGetAllLocations() throws SuperBeingPersistenceException {
         Location loc = new Location();
         loc.setName("Legion of Doom");
         loc.setDescription("Bad guy party palace");
@@ -470,7 +468,7 @@ public class SuperBeingDaoTest {
      * Test getAllLocationsBySuperId method
      */
     @Test
-    public void testGetAllLocationsBySuperId() {
+    public void testGetAllLocationsBySuperId() throws SuperBeingPersistenceException {
         Location loc1 = new Location();
         loc1.setName("Legion of Doom");
         loc1.setDescription("Bad guy party palace");
@@ -524,7 +522,7 @@ public class SuperBeingDaoTest {
      * Test addSighting, getSightingById, deleteSighting methods
      */
     @Test
-    public void testAddGetDeleteSighting() {
+    public void testAddGetDeleteSighting() throws SuperBeingPersistenceException {
         List<Power> powers = new ArrayList<>();
         Power p1 = new Power();
         p1.setDescription("Flight");
@@ -561,13 +559,12 @@ public class SuperBeingDaoTest {
         Sighting fromDao = dao.getSightingById(s.getSightingId());
         assertEquals(fromDao, s);
         
-        dao.deleteSighting(fromDao.getSightingId());
-        fromDao = dao.getSightingById(fromDao.getSightingId());
-        assertNull(fromDao);
+        assertEquals(1, dao.deleteSighting(fromDao.getSightingId()));
+        assertEquals(0, dao.deleteSighting(fromDao.getSightingId()));
     }
     
     @Test
-    public void testUpdateSighting() {
+    public void testUpdateSighting() throws SuperBeingPersistenceException {
         
         List<Power> powers = new ArrayList<>();
         Power p1 = new Power();
@@ -646,7 +643,7 @@ public class SuperBeingDaoTest {
      * Test getAllSightings method
      */
     @Test
-    public void testGetAllSightings() {
+    public void testGetAllSightings() throws SuperBeingPersistenceException {
         
         assertEquals(0, dao.getAllSightings().size());
         
@@ -732,7 +729,7 @@ public class SuperBeingDaoTest {
      * Test getAllSightingsByDate method
      */
     @Test
-    public void testGetAllSightingsByDate() {
+    public void testGetAllSightingsByDate() throws SuperBeingPersistenceException {
         List<Power> powers = new ArrayList<>();
         Power p1 = new Power();
         p1.setDescription("Flight");
@@ -841,7 +838,7 @@ public class SuperBeingDaoTest {
     }
     
     @Test
-    public void testAddGetDeleteOrganization() {
+    public void testAddGetDeleteOrganization() throws SuperBeingPersistenceException {
         List<Power> powers = new ArrayList<>();
         Power p1 = new Power();
         p1.setDescription("Test Power 1");
@@ -876,20 +873,16 @@ public class SuperBeingDaoTest {
         org.setEmail("test@email.com");
         org.setMembers(beings);
         
-        Organization fromDao = dao.getOrganizationById(org.getOrganizationId());
-        assertNull(fromDao);
-        
         dao.addOrganization(org);
-        fromDao = dao.getOrganizationById(org.getOrganizationId());
+        Organization fromDao = dao.getOrganizationById(org.getOrganizationId());
         assertEquals(fromDao, org);
         
-        dao.deleteOrganization(org.getOrganizationId());
-        fromDao = dao.getOrganizationById(org.getOrganizationId());
-        assertNull(fromDao);
+        assertEquals(1, dao.deleteOrganization(org.getOrganizationId()));
+        assertEquals(0, dao.deleteOrganization(org.getOrganizationId()));
     }
     
     @Test
-    public void testUpdateOrganization() {
+    public void testUpdateOrganization() throws SuperBeingPersistenceException {
         List<Power> powers = new ArrayList<>();
         Power p1 = new Power();
         p1.setDescription("Flight");
@@ -971,7 +964,7 @@ public class SuperBeingDaoTest {
      * Test getAllOrganizations method
      */
     @Test
-    public void testGetAllOrganizations() {
+    public void testGetAllOrganizations() throws SuperBeingPersistenceException {
         
         assertEquals(0, dao.getAllOrganizations().size());
         
@@ -1060,7 +1053,7 @@ public class SuperBeingDaoTest {
      * Test getAllOrganizationsBySuperId method
      */
     @Test
-    public void testGetAllOrganizationsBySuperId() {
+    public void testGetAllOrganizationsBySuperId() throws SuperBeingPersistenceException {
         Power power = new Power();
         power.setDescription("Super Strength");
         List<Power> powers = new ArrayList<>();
@@ -1141,7 +1134,7 @@ public class SuperBeingDaoTest {
     }
     
     @Test
-    public void testGetMostRecentSightings() {
+    public void testGetMostRecentSightings() throws SuperBeingPersistenceException {
         Location loc = new Location();
         loc.setName("Test Location");
         loc.setDescription("Test Loc Description");

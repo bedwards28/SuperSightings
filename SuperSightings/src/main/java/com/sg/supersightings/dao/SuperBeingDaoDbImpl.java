@@ -207,26 +207,33 @@ public class SuperBeingDaoDbImpl implements SuperBeingDao {
 
     @Override
     @Transactional
-    public void addSuperBeing(SuperBeing being) {
-        jt.update(INSERT_SUPER_BEING,
+    public SuperBeing addSuperBeing(SuperBeing being) throws SuperBeingPersistenceException {
+        try {
+            jt.update(INSERT_SUPER_BEING,
                 being.getName(),
                 being.getDescription(),
                 being.getIdentity());
 
-        int super_id
-                = jt.queryForObject("select LAST_INSERT_ID()",
-                        Integer.class);
+            int super_id
+                    = jt.queryForObject("select LAST_INSERT_ID()",
+                            Integer.class);
 
-        being.setSuperId(super_id);
+            being.setSuperId(super_id);
 
-        insertPowers(being);
+            insertPowers(being);
 
-        insertSuperBeingPowers(being);
+            insertSuperBeingPowers(being);
+
+            return being;
+        } catch (DataAccessException e) {
+            throw new SuperBeingPersistenceException(e.getMessage());
+        }
+        
     }
 
     @Override
     @Transactional
-    public SuperBeing getSuperBeingById(int superId) {
+    public SuperBeing getSuperBeingById(int superId) throws SuperBeingPersistenceException {
         try {
             SuperBeing sb = jt.queryForObject(SELECT_SUPER_BY_ID,
                     new SuperMapper(),
@@ -236,103 +243,124 @@ public class SuperBeingDaoDbImpl implements SuperBeingDao {
             associatePowersWithSuper(sb);
             return sb;
         } catch (EmptyResultDataAccessException e) {
-            return null;
+            throw new SuperBeingPersistenceException(e.getMessage());
         }
     }
 
-    private void insertPowers(SuperBeing sb) {
-        List<Power> powers = sb.getPowers();
+    private void insertPowers(SuperBeing sb) throws SuperBeingPersistenceException {
+        try {
+            List<Power> powers = sb.getPowers();
 
-        if (powers != null) {
-            for (Power currentPower : powers) {
-                addPower(currentPower);
+            if (powers != null) {
+                for (Power currentPower : powers) {
+                    addPower(currentPower);
+                }
             }
+        } catch (EmptyResultDataAccessException e) {
+            throw new SuperBeingPersistenceException(e.getMessage());
         }
+        
     }
 
-    private void insertSuperBeingPowers(SuperBeing sb) {
-        final int superId = sb.getSuperId();
-        final List<Power> powers = sb.getPowers();
+    private void insertSuperBeingPowers(SuperBeing sb) throws SuperBeingPersistenceException {
+        try {
+            final int superId = sb.getSuperId();
+            final List<Power> powers = sb.getPowers();
 
-        if (powers != null) {
-            for (Power currentPower : powers) {
-                jt.update(INSERT_SUPER_BEING_POWER,
-                        superId,
-                        currentPower.getPowerId());
+            if (powers != null) {
+                for (Power currentPower : powers) {
+                    jt.update(INSERT_SUPER_BEING_POWER,
+                            superId,
+                            currentPower.getPowerId());
+                }
             }
+        } catch (EmptyResultDataAccessException e) {
+            throw new SuperBeingPersistenceException(e.getMessage());
         }
+        
     }
 
-    private List<Power> findPowersForSuperBeing(SuperBeing sb) {
-        return jt.query(SELECT_ALL_POWERS_BY_SUPER_ID,
+    private List<Power> findPowersForSuperBeing(SuperBeing sb) throws SuperBeingPersistenceException {
+        try {
+            return jt.query(SELECT_ALL_POWERS_BY_SUPER_ID,
                 new PowerMapper(),
                 sb.getSuperId());
+        } catch (EmptyResultDataAccessException e) {
+            throw new SuperBeingPersistenceException(e.getMessage());
+        }
+        
     }
 
-    private void associatePowersWithSuper(SuperBeing sb) {
-        sb.setPowers(findPowersForSuperBeing(sb));
+    private void associatePowersWithSuper(SuperBeing sb) throws SuperBeingPersistenceException {
+        try {
+            sb.setPowers(findPowersForSuperBeing(sb));
+        } catch (EmptyResultDataAccessException e) {
+            throw new SuperBeingPersistenceException(e.getMessage());
+        }
     }
 
     @Override
     @Transactional
-    public SuperBeing deleteSuperBeing(int superId) {
+    public int deleteSuperBeing(int superId) throws SuperBeingPersistenceException {
         try {
-            SuperBeing sb = getSuperBeingById(superId);
-
             // delete super_being_power entries
             deleteSuperBeingPowersBySuperId(superId);
 
             // delete super_being entry
-            jt.update(DELETE_SUPER_BEING, superId);
+            return jt.update(DELETE_SUPER_BEING, superId);
 
-            return sb;
         } catch (DataAccessException e) {
-            return null;
+            throw new SuperBeingPersistenceException(e.getMessage());
         }
     }
 
     @Override
     @Transactional
-    public SuperBeing updateSuperBeing(SuperBeing being) {
-        jt.update(UPDATE_SUPER_BEING,
+    public SuperBeing updateSuperBeing(SuperBeing being) throws SuperBeingPersistenceException {
+        try {
+            jt.update(UPDATE_SUPER_BEING,
                 being.getName(),
                 being.getDescription(),
                 being.getIdentity(),
                 being.getSuperId());
 
-        insertPowers(being);
+            insertPowers(being);
 
-        // delete super_being_power entries
-        deleteSuperBeingPowersBySuperId(being.getSuperId());
+            // delete super_being_power entries
+            deleteSuperBeingPowersBySuperId(being.getSuperId());
 
-        // recreate super_being_power entries
-        insertSuperBeingPowers(being);
+            // recreate super_being_power entries
+            insertSuperBeingPowers(being);
 
-        return being;
+            return being;
+        } catch (DataAccessException e) {
+            throw new SuperBeingPersistenceException(e.getMessage());
+        }
+        
     }
 
     @Override
     @Transactional
-    public List<SuperBeing> getAllSuperBeings() {
+    public List<SuperBeing> getAllSuperBeings() throws SuperBeingPersistenceException {
         try {
             List<SuperBeing> beings
                     = jt.query(SELECT_ALL_SUPER_BEINGS, new SuperMapper());
 
-            for (SuperBeing currentBeing : beings) {
-                this.associatePowersWithSuper(currentBeing);
+            if (beings.size() > 0) {
+                for (SuperBeing currentBeing : beings) {
+                    this.associatePowersWithSuper(currentBeing);
+                }
             }
 
             return beings;
         } catch (DataAccessException e) {
-            return null;
-        } catch (NullPointerException e) {
-            return null;
+            throw new SuperBeingPersistenceException(e.getMessage());
         }
     }
 
     @Override
     @Transactional
-    public List<SuperBeing> getAllOrganizationMembers(int orgId) {
+    public List<SuperBeing> getAllOrganizationMembers(int orgId) throws SuperBeingPersistenceException {
         try {
             List<SuperBeing> beings = new ArrayList<>();
 
@@ -341,102 +369,118 @@ public class SuperBeingDaoDbImpl implements SuperBeingDao {
                     new SuperIdMapper(),
                     orgId);
 
-            for (Integer currentId : superIds) {
-                SuperBeing sb = getSuperBeingById(currentId);
-                beings.add(sb);
+            if (superIds.size() > 0) {
+                for (Integer currentId : superIds) {
+                    SuperBeing sb = getSuperBeingById(currentId);
+                    beings.add(sb);
+                }
             }
 
             return beings;
         } catch (DataAccessException e) {
-            return null;
+            throw new SuperBeingPersistenceException(e.getMessage());
         }
     }
 
     @Override
     @Transactional
-    public Power addPower(Power power) {
-        Power fromDb = new Power();
-
+    public Power addPower(Power power) throws SuperBeingPersistenceException {
         try {
-            fromDb = jt.queryForObject(SELECT_POWER_BY_DESCRIPTION,
-                    new PowerMapper(),
-                    power.getDescription());
+            Power fromDb = new Power();
+
+            try {
+                fromDb = jt.queryForObject(SELECT_POWER_BY_DESCRIPTION,
+                        new PowerMapper(),
+                        power.getDescription());
+            } catch (DataAccessException e) {
+                fromDb = null;
+            }
+
+            if (fromDb == null) {
+                jt.update(INSERT_POWER, power.getDescription());
+
+                int powerId
+                        = jt.queryForObject("select LAST_INSERT_ID()", Integer.class);
+
+                power.setPowerId(powerId);
+            } else {
+                power.setPowerId(fromDb.getPowerId());
+            }
+            return power;
         } catch (DataAccessException e) {
-            fromDb = null;
+            throw new SuperBeingPersistenceException(e.getMessage());
         }
-
-        if (fromDb == null) {
-            jt.update(INSERT_POWER, power.getDescription());
-
-            int powerId
-                    = jt.queryForObject("select LAST_INSERT_ID()", Integer.class);
-
-            power.setPowerId(powerId);
-        } else {
-            power.setPowerId(fromDb.getPowerId());
-        }
-        return power;
+        
     }
 
     @Override
     @Transactional
-    public void deletePower(int powerId) {
+    public int deletePower(int powerId) throws SuperBeingPersistenceException {
         try {
             // delete super_being_power table entries
             jt.update(DELETE_SUPER_BEING_POWER_BY_POWER_ID, powerId);
             // delete power table entry
-            jt.update(DELETE_POWER, powerId);
+            return jt.update(DELETE_POWER, powerId);
         } catch (DataAccessException e) {
-            // do nothing
+            throw new SuperBeingPersistenceException(e.getMessage());
         }
     }
 
     @Override
-    public Power updatePower(Power power) {
-        jt.update(UPDATE_POWER, power.getDescription(), power.getPowerId());
-        return power;
+    public Power updatePower(Power power) throws SuperBeingPersistenceException {
+        try {
+            jt.update(UPDATE_POWER, power.getDescription(), power.getPowerId());
+            return power;
+        } catch (DataAccessException e) {
+            throw new SuperBeingPersistenceException(e.getMessage());
+        }
     }
 
     @Override
-    public Power getPowerById(int powerId) {
+    public Power getPowerById(int powerId) throws SuperBeingPersistenceException {
         try {
             return jt.queryForObject(SELECT_POWER_BY_ID,
                     new PowerMapper(),
                     powerId);
         } catch (EmptyResultDataAccessException e) {
-            return null;
+            throw new SuperBeingPersistenceException(e.getMessage());
         }
 
     }
 
     @Override
-    public Power getPowerByDescription(String description) {
+    public Power getPowerByDescription(String description) throws SuperBeingPersistenceException {
         try {
             return jt.queryForObject(SELECT_POWER_BY_DESCRIPTION,
                     new PowerMapper(),
                     description);
         } catch (EmptyResultDataAccessException e) {
-            return null;
+            throw new SuperBeingPersistenceException(e.getMessage());
         }
     }
 
     @Override
-    public List<Power> getAllPowers() {
-        return jt.query(SELECT_ALL_POWERS, new PowerMapper());
+    public List<Power> getAllPowers() throws SuperBeingPersistenceException {
+        try {
+            return jt.query(SELECT_ALL_POWERS, new PowerMapper());
+        } catch (DataAccessException e) {
+            throw new SuperBeingPersistenceException(e.getMessage());
+        }
     }
 
-    private void deleteSuperBeingPowersBySuperId(int superId) {
+    private void deleteSuperBeingPowersBySuperId(int superId) throws SuperBeingPersistenceException {
         try {
             jt.update(DELETE_ALL_POWERS_BY_SUPER_ID, superId);
         } catch (DataAccessException e) {
-            // do nothing
+            throw new SuperBeingPersistenceException(e.getMessage());
         }
     }
 
     @Override
     @Transactional
-    public void addLocation(Location loc) {
-        jt.update(INSERT_LOCATION,
+    public Location addLocation(Location loc) throws SuperBeingPersistenceException {
+        try {
+            jt.update(INSERT_LOCATION,
                 loc.getName(),
                 loc.getDescription(),
                 loc.getAddressLine1(),
@@ -448,38 +492,53 @@ public class SuperBeingDaoDbImpl implements SuperBeingDao {
                 loc.getLatitude(),
                 loc.getLongitude());
 
-        int locationId
-                = jt.queryForObject("select LAST_INSERT_ID()", Integer.class);
+            int locationId
+                    = jt.queryForObject("select LAST_INSERT_ID()", Integer.class);
 
-        loc.setLocationId(locationId);
+            loc.setLocationId(locationId);
+
+            return loc;
+        } catch (DataAccessException e) {
+            throw new SuperBeingPersistenceException(e.getMessage());
+        }
+        
     }
 
     @Override
-    public Location getLocationById(int locationId) {
+    public Location getLocationById(int locationId) throws SuperBeingPersistenceException {
         try {
             return jt.queryForObject(SELECT_LOCATION_BY_ID,
                     new LocationMapper(),
                     locationId);
         } catch (DataAccessException e) {
-            return null;
+            throw new SuperBeingPersistenceException(e.getMessage());
         }
     }
 
     @Override
-    public List<Location> getAllLocations() {
-        return jt.query(SELECT_ALL_LOCATIONS, new LocationMapper());
+    public List<Location> getAllLocations() throws SuperBeingPersistenceException {
+        try {
+            return jt.query(SELECT_ALL_LOCATIONS, new LocationMapper());
+        } catch (DataAccessException e) {
+            throw new SuperBeingPersistenceException(e.getMessage());
+        }
     }
 
     @Override
-    public List<Location> getAllLocationsBySuperId(int superId) {
-        return jt.query(SELECT_ALL_LOCATIONS_BY_SUPER_ID,
+    public List<Location> getAllLocationsBySuperId(int superId) throws SuperBeingPersistenceException {
+        try {
+            return jt.query(SELECT_ALL_LOCATIONS_BY_SUPER_ID,
                 new LocationMapper(),
                 superId);
+        } catch (DataAccessException e) {
+            throw new SuperBeingPersistenceException(e.getMessage());
+        }
     }
 
     @Override
-    public void updateLocation(Location loc) {
-        jt.update(UPDATE_LOCATION,
+    public Location updateLocation(Location loc) throws SuperBeingPersistenceException {
+        try {
+            jt.update(UPDATE_LOCATION,
                 loc.getName(),
                 loc.getDescription(),
                 loc.getAddressLine1(),
@@ -491,76 +550,99 @@ public class SuperBeingDaoDbImpl implements SuperBeingDao {
                 loc.getLatitude(),
                 loc.getLongitude(),
                 loc.getLocationId());
+            
+            return this.getLocationById(loc.getLocationId());
+        } catch (DataAccessException e) {
+            throw new SuperBeingPersistenceException(e.getMessage());
+        }
     }
 
     @Override
-    public void deleteLocationById(int locationId) {
+    public int deleteLocationById(int locationId) throws SuperBeingPersistenceException {
         try {
-            jt.update(DELETE_LOCATION, locationId);
+            return jt.update(DELETE_LOCATION, locationId);
         } catch (DataAccessException e) {
-            // do nothing
+            throw new SuperBeingPersistenceException(e.getMessage());
         }
     }
 
     @Override
     @Transactional
-    public void addSighting(Sighting sighting) {
-        jt.update(INSERT_SIGHTING,
+    public Sighting addSighting(Sighting sighting) throws SuperBeingPersistenceException {
+        try {
+            jt.update(INSERT_SIGHTING,
                 sighting.getLocation().getLocationId(),
                 sighting.getDate().toString());
 
-        sighting.setSightingId(
-                jt.queryForObject("select LAST_INSERT_ID()", Integer.class));
+            sighting.setSightingId(
+                    jt.queryForObject("select LAST_INSERT_ID()", Integer.class));
 
-        // insert super_being_sighting bridge table entries
-        insertSuperBeingSighting(
-                sighting.getSightingId(), sighting.getSuperBeings());
+            // insert super_being_sighting bridge table entries
+            insertSuperBeingSighting(
+                    sighting.getSightingId(), sighting.getSuperBeings());
+            
+            return sighting;
+        } catch (DataAccessException e) {
+            throw new SuperBeingPersistenceException(e.getMessage());
+        }
+        
     }
 
     private void insertSuperBeingSighting(
-            int sightingId, List<SuperBeing> beings) {
-
-        for (SuperBeing currentBeing : beings) {
-            jt.update(INSERT_SUPER_BEING_SIGHTING,
-                    currentBeing.getSuperId(),
-                    sightingId);
+            int sightingId, List<SuperBeing> beings) throws SuperBeingPersistenceException {
+        try {
+            for (SuperBeing currentBeing : beings) {
+                jt.update(INSERT_SUPER_BEING_SIGHTING,
+                        currentBeing.getSuperId(),
+                        sightingId);
+            }
+        } catch (DataAccessException e) {
+            throw new SuperBeingPersistenceException(e.getMessage());
         }
+        
     }
 
     @Override
     @Transactional
-    public void deleteSighting(int sightingId) {
+    public int deleteSighting(int sightingId) throws SuperBeingPersistenceException {
         try {
             // delete super_being_sighting enries
             jt.update(DELETE_ALL_SUPER_SIGHTINGS_BY_SIGHTING_ID, sightingId);
             // delete sighting table entry
-            jt.update(DELETE_SIGHTING, sightingId);
+            return jt.update(DELETE_SIGHTING, sightingId);
         } catch (DataAccessException e) {
-            // do nothing
+            throw new SuperBeingPersistenceException(e.getMessage());
         }
 
     }
 
     @Override
     @Transactional
-    public void updateSighting(Sighting s) {
-        String str = s.getDate().toString();
-        jt.update(UPDATE_SIGHTING,
-                s.getDate().toString(),
-                s.getLocation().getLocationId(),
-                s.getSightingId());
+    public Sighting updateSighting(Sighting s) throws SuperBeingPersistenceException {
+        try {
+            String str = s.getDate().toString();
+            jt.update(UPDATE_SIGHTING,
+                    s.getDate().toString(),
+                    s.getLocation().getLocationId(),
+                    s.getSightingId());
 
-        // delete super_being_sighting entries
-        jt.update(DELETE_ALL_SUPER_SIGHTINGS_BY_SIGHTING_ID, s.getSightingId());
+            // delete super_being_sighting entries
+            jt.update(DELETE_ALL_SUPER_SIGHTINGS_BY_SIGHTING_ID, s.getSightingId());
 
-        // recreate super_being_sighting entries
-        insertSuperBeingSighting(
-                s.getSightingId(), s.getSuperBeings());
+            // recreate super_being_sighting entries
+            insertSuperBeingSighting(
+                    s.getSightingId(), s.getSuperBeings());
+            
+            return s;
+        } catch (DataAccessException e) {
+            throw new SuperBeingPersistenceException(e.getMessage());
+        }
+        
     }
 
     @Override
     @Transactional
-    public Sighting getSightingById(int sightingId) {
+    public Sighting getSightingById(int sightingId) throws SuperBeingPersistenceException {
         try {
             Sighting s = jt.queryForObject(SELECT_SIGHTING_BY_ID,
                     new SightingMapper(),
@@ -574,13 +656,13 @@ public class SuperBeingDaoDbImpl implements SuperBeingDao {
 
             return s;
         } catch (DataAccessException e) {
-            return null;
+            throw new SuperBeingPersistenceException(e.getMessage());
         }
     }
 
     @Override
     @Transactional
-    public List<Sighting> getAllSightings() {
+    public List<Sighting> getAllSightings() throws SuperBeingPersistenceException {
         try {
             List<Sighting> sightings
                     = jt.query(SELECT_ALL_SIGHTINGS, new SightingMapper());
@@ -594,112 +676,150 @@ public class SuperBeingDaoDbImpl implements SuperBeingDao {
 
             return sightings;
         } catch (DataAccessException e) {
-            return null;
+            throw new SuperBeingPersistenceException(e.getMessage());
         }
     }
 
     @Override
     @Transactional
-    public List<Sighting> getAllSightingsByDate(LocalDate date) {
+    public List<Sighting> getAllSightingsByDate(LocalDate date) throws SuperBeingPersistenceException {
         try {
             List<Sighting> sightings = jt.query(
                     SELECT_ALL_SIGHTINGS_BY_DATE,
                     new SightingMapper(),
                     date.toString());
 
-            for (Sighting currentSighting : sightings) {
-                associateLocationWithSighting(currentSighting);
-                associateSuperBeingsWithSighting(currentSighting);
+            if (sightings.size() > 0) {
+                for (Sighting currentSighting : sightings) {
+                    associateLocationWithSighting(currentSighting);
+                    associateSuperBeingsWithSighting(currentSighting);
+                }
             }
 
             return sightings;
         } catch (DataAccessException e) {
-            return null;
+            throw new SuperBeingPersistenceException(e.getMessage());
         }
     }
 
-    private void associateLocationWithSighting(Sighting s) {
-        // Get location object for sighting
-        Location loc = jt.queryForObject(SELECT_LOCATION_BY_SIGHTING_ID,
-                new LocationMapper(),
-                s.getSightingId());
+    private void associateLocationWithSighting(Sighting s) throws SuperBeingPersistenceException {
+        try {
+            // Get location object for sighting
+            Location loc = jt.queryForObject(SELECT_LOCATION_BY_SIGHTING_ID,
+                    new LocationMapper(),
+                    s.getSightingId());
 
-        s.setLocation(loc);
+            s.setLocation(loc);
+        } catch (DataAccessException e) {
+            throw new SuperBeingPersistenceException(e.getMessage());
+        }
+        
     }
 
-    private void associateSuperBeingsWithSighting(Sighting s) {
-        List<SuperBeing> beings
+    private void associateSuperBeingsWithSighting(Sighting s) throws SuperBeingPersistenceException {
+        try {
+            List<SuperBeing> beings
                 = jt.query(SELECT_ALL_SUPER_BEINGS_BY_SIGHTING_ID,
                         new SuperMapper(),
                         s.getSightingId());
+            
+            if (beings.size() > 0) {
+                // Associate powers with supers
+                for (SuperBeing currentBeing : beings) {
+                    this.associatePowersWithSuper(currentBeing);
+                }
+            }
 
-        // Associate powers with supers
-        for (SuperBeing currentBeing : beings) {
-            this.associatePowersWithSuper(currentBeing);
+            s.setSuperBeings(beings);
+        } catch (DataAccessException e) {
+            throw new SuperBeingPersistenceException(e.getMessage());
         }
-
-        s.setSuperBeings(beings);
+        
     }
 
     @Override
     @Transactional
-    public void addOrganization(Organization org) {
-        jt.update(INSERT_ORGANIZATION,
+    public Organization addOrganization(Organization org) throws SuperBeingPersistenceException {
+        try {
+            jt.update(INSERT_ORGANIZATION,
                 org.getName(),
                 org.getLocation().getLocationId(),
                 org.getPhone(),
                 org.getEmail());
 
-        int orgId = jt.queryForObject("select LAST_INSERT_ID()", Integer.class);
+            int orgId = jt.queryForObject("select LAST_INSERT_ID()", Integer.class);
 
-        org.setOrganizationId(orgId);
+            org.setOrganizationId(orgId);
 
-        // create organization_member entries
-        insertOrganizationMembers(org);
-    }
-
-    private void insertOrganizationMembers(Organization o) {
-        List<SuperBeing> members = o.getMembers();
-
-        if (members != null) {
-            for (SuperBeing currentMember : members) {
-                jt.update(INSERT_ORG_MEMBER,
-                        o.getOrganizationId(),
-                        currentMember.getSuperId());
-            }
+            // create organization_member entries
+            insertOrganizationMembers(org);
+            
+            return org;
+        } catch (DataAccessException e) {
+            throw new SuperBeingPersistenceException(e.getMessage());
         }
+        
+    }
+
+    private void insertOrganizationMembers(Organization o) throws SuperBeingPersistenceException {
+        try {
+            List<SuperBeing> members = o.getMembers();
+
+            if (members != null) {
+                for (SuperBeing currentMember : members) {
+                    jt.update(INSERT_ORG_MEMBER,
+                            o.getOrganizationId(),
+                            currentMember.getSuperId());
+                }
+            }
+        } catch (DataAccessException e) {
+            throw new SuperBeingPersistenceException(e.getMessage());
+        }
+        
     }
 
     @Override
     @Transactional
-    public void deleteOrganization(int orgId) {
-        // delete organization_members entries
-        jt.update(DELETE_ORG_MEMBERS_BY_ORG_ID, orgId);
+    public int deleteOrganization(int orgId) throws SuperBeingPersistenceException {
+        try {
+            // delete organization_members entries
+            jt.update(DELETE_ORG_MEMBERS_BY_ORG_ID, orgId);
 
-        // delete organization table entry
-        jt.update(DELETE_ORGANIZATION, orgId);
+            // delete organization table entry
+            return jt.update(DELETE_ORGANIZATION, orgId);
+        } catch (DataAccessException e) {
+            throw new SuperBeingPersistenceException(e.getMessage());
+        }
+        
     }
 
     @Override
     @Transactional
-    public void updateOrganization(Organization org) {
-        jt.update(UPDATE_ORGANIZATION,
+    public Organization updateOrganization(Organization org) throws SuperBeingPersistenceException {
+        try {
+            jt.update(UPDATE_ORGANIZATION,
                 org.getName(),
                 org.getLocation().getLocationId(),
                 org.getPhone(),
                 org.getEmail(),
                 org.getOrganizationId());
 
-        // delete organization_memmbers entries
-        jt.update(DELETE_ORG_MEMBERS_BY_ORG_ID, org.getOrganizationId());
+            // delete organization_memmbers entries
+            jt.update(DELETE_ORG_MEMBERS_BY_ORG_ID, org.getOrganizationId());
 
-        // recreate organization_members entries
-        insertOrganizationMembers(org);
+            // recreate organization_members entries
+            insertOrganizationMembers(org);
+            
+            return org;
+        } catch (DataAccessException e) {
+            throw new SuperBeingPersistenceException(e.getMessage());
+        }
+        
     }
 
     @Override
     @Transactional
-    public Organization getOrganizationById(int orgId) {
+    public Organization getOrganizationById(int orgId) throws SuperBeingPersistenceException {
         try {
             Organization org = jt.queryForObject(
                     SELECT_ORGANIZATION_BY_ID,
@@ -713,32 +833,34 @@ public class SuperBeingDaoDbImpl implements SuperBeingDao {
             return org;
 
         } catch (DataAccessException e) {
-            return null;
+            throw new SuperBeingPersistenceException(e.getMessage());
         }
     }
 
     @Override
     @Transactional
-    public List<Organization> getAllOrganizations() {
+    public List<Organization> getAllOrganizations() throws SuperBeingPersistenceException {
         try {
             List<Organization> orgs
                     = jt.query(SELECT_ALL_ORGANIZATIONS, new OrganizationMapper());
 
-            for (Organization currentOrg : orgs) {
-                associateLocationWithOrg(currentOrg);
-                associateMembersWithOrg(currentOrg);
+            if (orgs.size() > 0) {
+                for (Organization currentOrg : orgs) {
+                    associateLocationWithOrg(currentOrg);
+                    associateMembersWithOrg(currentOrg);
+                }
             }
 
             return orgs;
         } catch (DataAccessException e) {
-            return null;
+            throw new SuperBeingPersistenceException(e.getMessage());
         }
 
     }
 
     @Override
     @Transactional
-    public List<Organization> getAllOrganizationsBySuperId(int superId) {
+    public List<Organization> getAllOrganizationsBySuperId(int superId) throws SuperBeingPersistenceException {
         try {
             List<Organization> orgs = new ArrayList<>();
 
@@ -747,58 +869,79 @@ public class SuperBeingDaoDbImpl implements SuperBeingDao {
                     new OrgIdMapper(),
                     superId);
 
-            for (Integer currentId : orgIds) {
-                Organization org = this.getOrganizationById(currentId);
-                orgs.add(org);
+            if (orgIds.size() > 0) {
+                for (Integer currentId : orgIds) {
+                    Organization org = this.getOrganizationById(currentId);
+                    orgs.add(org);
+                }
             }
 
             return orgs;
         } catch (DataAccessException e) {
-            return null;
+            throw new SuperBeingPersistenceException(e.getMessage());
         }
     }
 
-    private void associateLocationWithOrg(Organization o) {
-        int locationId = jt.queryForObject(
+    private void associateLocationWithOrg(Organization o) throws SuperBeingPersistenceException {
+        try {
+            int locationId = jt.queryForObject(
                 SELECT_LOCATION_ID_BY_ORG_ID,
                 Integer.class,
                 o.getOrganizationId());
 
-        Location loc = getLocationById(locationId);
+            Location loc = getLocationById(locationId);
 
-        o.setLocation(loc);
+            o.setLocation(loc);
+        } catch (DataAccessException e) {
+            throw new SuperBeingPersistenceException(e.getMessage());
+        }
+        
     }
 
-    private void associateMembersWithOrg(Organization o) {
-        List<SuperBeing> members = new ArrayList<>();
+    private void associateMembersWithOrg(Organization o) throws SuperBeingPersistenceException {
+        try {
+            List<SuperBeing> members = new ArrayList<>();
 
-        List<Integer> superIds = jt.query(
-                SELECT_ALL_SUPER_IDS_BY_ORG_ID,
-                new SuperIdMapper(),
-                o.getOrganizationId());
+            List<Integer> superIds = jt.query(
+                    SELECT_ALL_SUPER_IDS_BY_ORG_ID,
+                    new SuperIdMapper(),
+                    o.getOrganizationId());
 
-        for (Integer currentId : superIds) {
-            SuperBeing sb = this.getSuperBeingById(currentId);
-            members.add(sb);
+            if (superIds.size() > 0) {
+                for (Integer currentId : superIds) {
+                    SuperBeing sb = this.getSuperBeingById(currentId);
+                    members.add(sb);
+                }
+            }
+
+            o.setMembers(members);
+        } catch (DataAccessException e) {
+            throw new SuperBeingPersistenceException(e.getMessage());
         }
-
-        o.setMembers(members);
+        
     }
 
     @Override
-    public List<Sighting> getMostRecentSightings() {
-        List<Sighting> sightingList = jt.query(SELECT_MOST_RECENT_SIGHTINGS,
+    public List<Sighting> getMostRecentSightings() throws SuperBeingPersistenceException {
+        try {
+            List<Sighting> sightingList = jt.query(SELECT_MOST_RECENT_SIGHTINGS,
                 new SightingMapper());
 
-        for (Sighting currentSighting : sightingList) {
-            // associate location with sighting
-            associateLocationWithSighting(currentSighting);
+            if (sightingList.size() > 0) {
+                for (Sighting currentSighting : sightingList) {
+                    // associate location with sighting
+                    associateLocationWithSighting(currentSighting);
 
-            // associate super beings with sighting
-            associateSuperBeingsWithSighting(currentSighting);
+                    // associate super beings with sighting
+                    associateSuperBeingsWithSighting(currentSighting);
+                }
+            }
+
+            return sightingList;
+        } catch (DataAccessException e) {
+            throw new SuperBeingPersistenceException(e.getMessage());
         }
         
-        return sightingList;
     }
 
     private static final class SuperMapper implements RowMapper<SuperBeing> {

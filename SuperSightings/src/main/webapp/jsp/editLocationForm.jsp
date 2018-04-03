@@ -99,7 +99,7 @@
                     <label for="add-latitude" class="col-md-4 control-label">Latitude:</label>
                     <div class="col-md-8">
                     <sf:input type="number" max="90" min="-90" step=".0001" class="form-control" 
-                              id="add-latitude" name="latitude" path="latitude" placeholder="Latitude"/>
+                              id="add-latitude" name="latitude" path="latitude" value="0.0" required="required" />
                     <sf:errors path="latitude" cssClass="error"></sf:errors>
                     </div>
                 </div>
@@ -107,7 +107,7 @@
                     <label for="add-longitude" class="col-md-4 control-label">Longitude:</label>
                     <div class="col-md-8">
                     <sf:input type="number" max="180" min="-180" step=".0001" class="form-control" 
-                              id="add-longitude" name="longitude" path="longitude" placeholder="Longitude"/>
+                              id="add-longitude" name="longitude" path="longitude" value="0.0" required="required" />
                     <sf:errors path="longitude" cssClass="error"></sf:errors>
                     </div>
                 </div>

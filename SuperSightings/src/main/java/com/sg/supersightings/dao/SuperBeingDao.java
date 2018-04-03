@@ -20,70 +20,72 @@ import java.util.List;
 public interface SuperBeingDao {
     
     // super_being methods
-    public void addSuperBeing(SuperBeing being);
+    public SuperBeing addSuperBeing(SuperBeing being) throws SuperBeingPersistenceException;
     
-    public SuperBeing deleteSuperBeing(int superId);
+    public int deleteSuperBeing(int superId) throws SuperBeingPersistenceException;
     
-    public SuperBeing updateSuperBeing(SuperBeing being);
+    public SuperBeing updateSuperBeing(SuperBeing being) throws SuperBeingPersistenceException;
     
-    public SuperBeing getSuperBeingById(int id);
+    public SuperBeing getSuperBeingById(int id) throws SuperBeingPersistenceException;
     
-    public List<SuperBeing> getAllSuperBeings();
+    public List<SuperBeing> getAllSuperBeings() throws SuperBeingPersistenceException;
     
-    public List<SuperBeing> getAllOrganizationMembers(int orgId);
+    public List<SuperBeing> getAllOrganizationMembers(int orgId) throws SuperBeingPersistenceException;
     
     // power methods
-    public Power addPower(Power power);
+    public Power addPower(Power power) throws SuperBeingPersistenceException;
     
-    public void deletePower(int powerId);
+    public int deletePower(int powerId) throws SuperBeingPersistenceException;
     
-    public Power updatePower(Power power);
+    public Power updatePower(Power power) throws SuperBeingPersistenceException;
     
-    public Power getPowerById(int powerId);
+    public Power getPowerById(int powerId) throws SuperBeingPersistenceException;
     
-    public Power getPowerByDescription(String description);
+    public Power getPowerByDescription(String description) throws SuperBeingPersistenceException;
     
-    public List<Power> getAllPowers();
+    public List<Power> getAllPowers() throws SuperBeingPersistenceException;
     
     // location methods
-    public void addLocation(Location location);
+    public Location addLocation(Location location) throws SuperBeingPersistenceException;
     
-    public void deleteLocationById(int locationId);
+    public int deleteLocationById(int locationId) throws SuperBeingPersistenceException;
     
-    public void updateLocation(Location location);
+    public Location updateLocation(Location location) throws SuperBeingPersistenceException;
     
-    public Location getLocationById(int locationId);
+    public Location getLocationById(int locationId) throws SuperBeingPersistenceException;
     
-    public List<Location> getAllLocations();
+    public List<Location> getAllLocations() throws SuperBeingPersistenceException;
     
-    public List<Location> getAllLocationsBySuperId(int superId);
+    public List<Location> getAllLocationsBySuperId(int superId) throws SuperBeingPersistenceException;
     
     // sighting methods
-    public void addSighting(Sighting sighting);
+    public Sighting addSighting(Sighting sighting)throws SuperBeingPersistenceException;
     
-    public void deleteSighting(int sightingId);
+    public int deleteSighting(int sightingId) throws SuperBeingPersistenceException;
     
-    public void updateSighting(Sighting sighting);
+    public Sighting updateSighting(Sighting sighting) throws SuperBeingPersistenceException;
     
-    public Sighting getSightingById(int sightingId);
+    public Sighting getSightingById(int sightingId) throws SuperBeingPersistenceException;
 
-    public List<Sighting> getAllSightings();
+    public List<Sighting> getAllSightings()throws SuperBeingPersistenceException;
     
-    public List<Sighting> getAllSightingsByDate(LocalDate date);
+    public List<Sighting> getAllSightingsByDate(LocalDate date) throws SuperBeingPersistenceException;
+    
+    public List<Sighting> getMostRecentSightings() throws SuperBeingPersistenceException;
     
     // organization methods
-    public void addOrganization(Organization org);
+    public Organization addOrganization(Organization org) throws SuperBeingPersistenceException;
     
-    public void deleteOrganization(int orgId);
+    public int deleteOrganization(int orgId) throws SuperBeingPersistenceException;
     
-    public void updateOrganization(Organization org);
+    public Organization updateOrganization(Organization org) throws SuperBeingPersistenceException;
     
-    public Organization getOrganizationById(int orgId);
+    public Organization getOrganizationById(int orgId) throws SuperBeingPersistenceException;
     
-    public List<Organization> getAllOrganizations();
+    public List<Organization> getAllOrganizations() throws SuperBeingPersistenceException;
     
-    public List<Organization> getAllOrganizationsBySuperId(int superId);
+    public List<Organization> getAllOrganizationsBySuperId(int superId) throws SuperBeingPersistenceException;
     
-    public List<Sighting> getMostRecentSightings();
+    
     
 }
