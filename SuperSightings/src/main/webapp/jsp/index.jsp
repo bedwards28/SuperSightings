@@ -72,6 +72,7 @@
                             </tr>
                         </c:forEach>
                     </table>
+                    <div>${loadNewsfeedErrMsg}</div>
                 </div>
             </div>
         </div>

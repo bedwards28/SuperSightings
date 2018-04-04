@@ -64,6 +64,7 @@
                             </c:forEach>
                         </table>
                     </div>
+                    <div>${errMsg}</div>
                 </div>
 
                 <div class="col-md-6">

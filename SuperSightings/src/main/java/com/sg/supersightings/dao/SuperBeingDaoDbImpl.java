@@ -83,11 +83,17 @@ public class SuperBeingDaoDbImpl implements SuperBeingDao {
     private static final String UPDATE_POWER
             = "update power set description = ? where power_id = ?";
 
-    private static final String DELETE_ALL_POWERS_BY_SUPER_ID
+    private static final String DELETE_SUPER_BEING_POWERS_BY_SUPER_ID
             = "delete from super_being_power where super_id = ?";
 
     private static final String DELETE_SUPER_BEING_POWER_BY_POWER_ID
             = "delete from super_being_power where power_id = ?";
+    
+    private static final String DELETE_SUPER_BEING_SIGHTING_BY_SUPER_ID 
+            = "delete from super_being_sighting where super_id = ?";
+    
+    private static final String DELETE_ORGANIZATION_MEMBERS_BY_SUPER_ID 
+            = "delete from organization_members where super_id = ?";
 
     // Location queries
     private static final String INSERT_LOCATION
@@ -303,6 +309,12 @@ public class SuperBeingDaoDbImpl implements SuperBeingDao {
     @Transactional
     public int deleteSuperBeing(int superId) throws SuperBeingPersistenceException {
         try {
+            // delete super_being_sighting entries
+            deleteSuperBeingSightingBySuperId(superId);
+            
+            // delete organizatino_members entries
+            deleteOrganizationMembersBySuperId(superId);
+            
             // delete super_being_power entries
             deleteSuperBeingPowersBySuperId(superId);
 
@@ -337,6 +349,33 @@ public class SuperBeingDaoDbImpl implements SuperBeingDao {
             throw new SuperBeingPersistenceException(e.getMessage());
         }
         
+    }
+    
+    private int deleteSuperBeingPowersBySuperId(int superId) 
+            throws SuperBeingPersistenceException {
+        try {
+            return jt.update(DELETE_SUPER_BEING_POWERS_BY_SUPER_ID, superId);
+        } catch (DataAccessException e) {
+            throw new SuperBeingPersistenceException(e.getMessage());
+        }
+    }
+
+    private int deleteSuperBeingSightingBySuperId(int superId) 
+            throws SuperBeingPersistenceException {
+        try {
+            return jt.update(DELETE_SUPER_BEING_SIGHTING_BY_SUPER_ID, superId);
+        } catch (DataAccessException e) {
+            throw new SuperBeingPersistenceException(e.getMessage());
+        }
+    }
+    
+    private int deleteOrganizationMembersBySuperId(int superId) 
+            throws SuperBeingPersistenceException {
+        try {
+            return jt.update(DELETE_ORGANIZATION_MEMBERS_BY_SUPER_ID, superId);
+        } catch (DataAccessException e) {
+            throw new SuperBeingPersistenceException(e.getMessage());
+        }
     }
 
     @Override
@@ -468,13 +507,7 @@ public class SuperBeingDaoDbImpl implements SuperBeingDao {
         }
     }
 
-    private void deleteSuperBeingPowersBySuperId(int superId) throws SuperBeingPersistenceException {
-        try {
-            jt.update(DELETE_ALL_POWERS_BY_SUPER_ID, superId);
-        } catch (DataAccessException e) {
-            throw new SuperBeingPersistenceException(e.getMessage());
-        }
-    }
+
 
     @Override
     @Transactional

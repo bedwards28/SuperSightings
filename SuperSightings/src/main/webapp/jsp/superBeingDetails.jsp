@@ -27,7 +27,10 @@
 
             <div class="container">
                 <h3 class="col-md-offset-1 col-md-11">Super Hero/Villain Details</h3>
-
+                
+                <div class="col-md-offset-1 col-md-11">${superDetailsErrMsg}</div>
+                <br/>
+                
                 <div class="row">
                     <div class="col-md-2">
                         <p class="text-right">Name:</p>

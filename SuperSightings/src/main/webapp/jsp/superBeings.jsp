@@ -62,6 +62,11 @@
                             </c:forEach>
                         </table>
                     </div>
+                    <br/>
+                    <div>${deleteErrorMessage}</div>
+                    <div>${loadSupersErrorMsg}</div>
+                    <div>${loadPowersErrorMsg}</div>
+                    <div>${createSuperErrMsg}</div>
                 </div>
 
                 <div class="col-md-6">

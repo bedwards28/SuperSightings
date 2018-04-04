@@ -32,11 +32,11 @@ public class SuperSightingsController {
     public SuperSightingsController() {
     }
 
-    @GetMapping("/")
-    public String displayHomePage(Model model) {
-        // add newsfeed items to model
-        return "redirect:index";
-    }
+//    @GetMapping("/")
+//    public String displayHomePage(Model model) {
+//        // add newsfeed items to model
+//        return "redirect:index";
+//    }
     
     @GetMapping("/recentsightings")
     @ResponseBody
@@ -44,48 +44,57 @@ public class SuperSightingsController {
         try {
             return service.getMostRecentSightings();
         } catch (SuperBeingPersistenceException e) {
-            JOptionPane.showMessageDialog(null, "Unable to load news feed.");
+            return new ArrayList<>();
         }
-        
-        return null;
     }
     
-    @GetMapping("/index")
-    public String displayIndex(Model model) {
-        List<Sighting> sightingList = new ArrayList<>();
-        
-        try {
-            sightingList = service.getMostRecentSightings();
-        } catch (SuperBeingPersistenceException e) {
-            JOptionPane.showMessageDialog(null, "Unable to load news feed.");
-        }
-        
-        model.addAttribute("sightingList", sightingList);
-        return "index";
-    }
+//    @GetMapping("/index")
+//    public String displayIndex(Model model) {
+//        List<Sighting> sightingList = new ArrayList<>();
+//        
+//        try {
+//            sightingList = service.getMostRecentSightings();
+//        } catch (SuperBeingPersistenceException e) {
+//            JOptionPane.showMessageDialog(null, "Unable to load news feed.");
+//        }
+//        
+//        model.addAttribute("sightingList", sightingList);
+//        return "index";
+//    }
 
     @GetMapping("/supers")
-    public String displaySuperBeingsPage(Model model) {
-        List<SuperBeing> superList;
-        List<Power> powerList;
+    public String displaySuperBeingsPage(
+            HttpServletRequest request, 
+            Model model) {
+        
+        List<SuperBeing> superList = new ArrayList<>();
+        List<Power> powerList = new ArrayList<>();
+        String deleteErrorMessage;
+        String loadSupersErrorMsg = "";
+        String loadPowersErrorMsg = "";
+        
         try {
             superList = service.getAllSuperBeings();
         } catch (SuperBeingPersistenceException e) {
-            JOptionPane.showMessageDialog(null, "Unable to load supers list.");
-            superList = new ArrayList<>();
+            loadSupersErrorMsg = "Unable to load super being list at this time.";
         }
         
         try {
             powerList = service.getAllPowers();
         } catch (SuperBeingPersistenceException e) {
-            JOptionPane.showMessageDialog(null, "Unable to load powers list.");
-            powerList = new ArrayList<>();
+            loadPowersErrorMsg = "Unable to load powers at this time.";
         }
+        
+        deleteErrorMessage = request.getParameter("deleteErrorMessage");
         
         SuperBeing sb = new SuperBeing();
         model.addAttribute("superBeing", sb);
         model.addAttribute("superList", superList);
         model.addAttribute("powerList", powerList);
+        model.addAttribute("deleteErrorMessage", deleteErrorMessage);
+        model.addAttribute("loadSupersErrorMsg", loadSupersErrorMsg);
+        model.addAttribute("loadPowersErrorMsg", loadPowersErrorMsg);
+        
         return "superBeings";
     }
 
@@ -95,15 +104,17 @@ public class SuperSightingsController {
 
         String superIdParameter = request.getParameter("superId");
         int superId = Integer.parseInt(superIdParameter);
+        String superDetailsErrMsg = "";
 
         SuperBeing sb = new SuperBeing();
         try {
             sb = service.getSuperBeingById(superId);
         } catch (SuperBeingPersistenceException e) {
-            JOptionPane.showMessageDialog(null, "Unable to load super being.");
+            superDetailsErrMsg = "Unable to load super being details.";
         }
 
         model.addAttribute("superBeing", sb);
+        model.addAttribute("superDetailsErrMsg", superDetailsErrMsg);
 
         return "superBeingDetails";
     }
@@ -116,23 +127,21 @@ public class SuperSightingsController {
 
         List<Power> powers = sb.getPowers();
         List<Power> newPowers = new ArrayList<>();
+        String superCreateErrMsg = "";
 
         try {
-            for (Power currentPower : powers) {
-                Power newPower
-                        = service.getPowerByDescription(
-                                currentPower.getDescription());
+            if (powers != null) {
+                for (Power currentPower : powers) {
+                    Power newPower
+                            = service.getPowerByDescription(
+                                    currentPower.getDescription());
 
-                newPowers.add(newPower);
+                    newPowers.add(newPower);
+                }
             }
 
             sb.setPowers(newPowers);
-        } catch (SuperBeingPersistenceException e) {
             
-        } catch (NullPointerException e ) {
-            // do nothing, hasErrors will return errors
-        }
-        try {
             if (result.hasErrors()) {
                 model.addAttribute("powerList", service.getAllPowers());
                 model.addAttribute("superList", service.getAllSuperBeings());
@@ -142,27 +151,27 @@ public class SuperSightingsController {
 
             service.addSuperBeing(sb);
         } catch (SuperBeingPersistenceException e) {
-            JOptionPane.showMessageDialog(null, "Unable to create super being.");
+            superCreateErrMsg = "Unable to create super being.";
+            model.addAttribute("superCreateErrMsg", superCreateErrMsg);
         }
         
         return "redirect:supers";
     }
 
     @GetMapping("/deleteSuperBeing")
-    public String deleteSuperBeing(@RequestParam("superId") int superId) {
+    public String deleteSuperBeing(@RequestParam("superId") int superId, 
+            Model model) {
+        
+        String deleteErrorMessage = "";
+        
         try {
-            int success = service.deleteSuperBeing(superId);
-            
-            if (success == 0) {
-                JOptionPane.showMessageDialog(
-                        null, "Unable to delete super being due to relationship with "
-                                + "organizations and sightings.");
-            }
+            service.deleteSuperBeing(superId);
         } catch (SuperBeingPersistenceException e) {
-            JOptionPane.showMessageDialog(
-                        null, "Unable to delete super being due to relationship with "
-                                + "organizations and sightings.");
+            deleteErrorMessage = "Super being is tied to an organization or sighting. "
+                    + "Unable to delete.";
         }
+        
+        model.addAttribute("deleteErrorMessage", deleteErrorMessage);
         
         return "redirect:supers";
     }
@@ -177,13 +186,13 @@ public class SuperSightingsController {
         try {
             sb = service.getSuperBeingById(superId);
         } catch (SuperBeingPersistenceException e) {
-            JOptionPane.showMessageDialog(null, "Unable to edit super being.");
+            sb = new SuperBeing();
         }
         
         try {
             powerList = service.getAllPowers();
         } catch (SuperBeingPersistenceException e) {
-            JOptionPane.showMessageDialog(null, "Unable to get power list.");
+            powerList = new ArrayList<>();
         }
         
         model.addAttribute("superBeing", sb);
@@ -199,6 +208,8 @@ public class SuperSightingsController {
 
         List<Power> powers = sb.getPowers();
         List<Power> newPowers = new ArrayList<>();
+        List<Power> powerList;
+        String editSuperErrMsg;
 
         try {
             if (powers.size() > 0) {
@@ -211,16 +222,16 @@ public class SuperSightingsController {
 
                 sb.setPowers(newPowers);
             }
-        } catch (Exception e) {
-            
-        }
+//        } catch (Exception e) {
+//            
+//        }
 
-        List<Power> powerList = new ArrayList<>();
+//        List<Power> powerList = new ArrayList<>();
         
-        try {
+//        try {
            powerList = service.getAllPowers();
         } catch (SuperBeingPersistenceException e) {
-            JOptionPane.showMessageDialog(null, "Unable to get power list.");
+            powerList = new ArrayList<>();
         }
 
         if (result.hasErrors()) {
@@ -232,7 +243,8 @@ public class SuperSightingsController {
         try {
             service.updateSuperBeing(sb);
         } catch (SuperBeingPersistenceException e) {
-            JOptionPane.showMessageDialog(null, "Unable to update super being.");
+            editSuperErrMsg = "Unable to update super being.";
+            model.addAttribute("editSuperErrMsg", editSuperErrMsg);
         }
 
         return "redirect:supers";
@@ -244,6 +256,7 @@ public class SuperSightingsController {
         List<Location> locationList = new ArrayList<>();
         List<SuperBeing> superList = new ArrayList<>();
         Organization organization = new Organization();
+        String errMsg;
         
         try {
             orgList = service.getAllOrganizations();
@@ -251,7 +264,8 @@ public class SuperSightingsController {
             superList = service.getAllSuperBeings();
             
         } catch (SuperBeingPersistenceException e) {
-            JOptionPane.showMessageDialog(null, "Error loading organization page.");
+            errMsg = "Error loading organization page.";
+            model.addAttribute("errMsg", errMsg);
         }
         
         model.addAttribute("orgList", orgList);
@@ -267,11 +281,13 @@ public class SuperSightingsController {
             @RequestParam("organizationId") int organizationId, Model model) {
 
         Organization org = new Organization();
+        String errMsg;
         
         try {
             org = service.getOrganizationById(organizationId);
         } catch (SuperBeingPersistenceException e) {
-            JOptionPane.showMessageDialog(null, "Error loading organization details.");
+            errMsg = "Error loading organization details.";
+            model.addAttribute("errMst", errMsg);
         }
         
         model.addAttribute("organization", org);
@@ -289,10 +305,13 @@ public class SuperSightingsController {
 
         // Insert location into organization
         Location location = new Location();
+        String errMsg;
+        
         try {
             location = service.getLocationById(locationId);
         } catch (SuperBeingPersistenceException e) {
-            JOptionPane.showMessageDialog(null, "Error creating organization.");
+            errMsg = "Error creating organization.";
+            model.addAttribute("errMsg", errMsg);
         }
         
         organization.setLocation(location);
@@ -308,7 +327,8 @@ public class SuperSightingsController {
                     sb = service.getSuperBeingById(currentId);
                     members.add(sb);
                 } catch (SuperBeingPersistenceException e) {
-                    JOptionPane.showMessageDialog(null, "Error creating organization.");
+                    errMsg = "Error creating organization.";
+                    model.addAttribute("errMsg", errMsg);
                 }
                 
             }
@@ -331,7 +351,8 @@ public class SuperSightingsController {
 
             service.addOrganization(organization);
         } catch (SuperBeingPersistenceException e) {
-            JOptionPane.showMessageDialog(null, "Error creating organization members.");
+            errMsg = "Error creating organization members.";
+            model.addAttribute("errMsg", errMsg);
         }
         
 
@@ -339,11 +360,14 @@ public class SuperSightingsController {
     }
 
     @GetMapping("/deleteOrganization")
-    public String deleteOrganization(@RequestParam("organizationId") int organizationId) {
+    public String deleteOrganization(
+            @RequestParam("organizationId") int organizationId, 
+            Model model) {
         try {
             service.deleteOrganization(organizationId);
         } catch (SuperBeingPersistenceException e) {
-            JOptionPane.showMessageDialog(null, "Error deleting organization.");
+            String errMsg = "Error deleting organization.";
+            model.addAttribute("deleteOrgErrMsg", errMsg);
         }
         
         return "redirect:organizations";
@@ -365,7 +389,8 @@ public class SuperSightingsController {
             model.addAttribute("locationList", locationList);
             model.addAttribute("organization", organization);
         } catch (SuperBeingPersistenceException e) {
-            JOptionPane.showMessageDialog(null, "Error displayEditOrganizationForm.");
+            String errMsg = "Error loading organization";
+            model.addAttribute("editOrgErrMsg", errMsg);
         }
         
         return "editOrganizationForm";
@@ -411,21 +436,24 @@ public class SuperSightingsController {
 
             service.updateOrganization(organization);
         } catch (SuperBeingPersistenceException e) {
-            JOptionPane.showMessageDialog(null, "Error editOrganization.");
+            String errMsg = "Error editing organization";
+            model.addAttribute("editOrgErrMsg", errMsg);
         }
         
         return "redirect:organizations";
     }
 
     @GetMapping("/locations")
-    public String displayLocationsPage(Model model) {
+    public String displayLocationsPage(HttpServletRequest request, Model model) {
         try {
             List<Location> locationList = service.getAllLocations();
             Location loc = new Location();
             model.addAttribute("locationList", locationList);
             model.addAttribute(loc);
+            model.addAttribute("errMsg", request.getParameter("errMsg"));
         } catch (SuperBeingPersistenceException e) {
-            JOptionPane.showMessageDialog(null, "Error displayLocationsPage.");
+            String errMsg = "Error loading locations page.";
+            model.addAttribute("displayLocPageErrMsg", errMsg);
         }
         
         return "locations";
@@ -443,7 +471,8 @@ public class SuperSightingsController {
 
             model.addAttribute("location", location);
         } catch (SuperBeingPersistenceException e) {
-            JOptionPane.showMessageDialog(null, "Error displayLocationDetails.");
+            String errMsg = "Error loading locations details page.";
+            model.addAttribute("errMsg", errMsg);
         }   
 
         return "locationDetails";
@@ -464,19 +493,22 @@ public class SuperSightingsController {
             service.addLocation(location);
 
         } catch (SuperBeingPersistenceException e) {
-            JOptionPane.showMessageDialog(null, "Error createLocation.");
+            String errMsg = "Error creating location.";
+            model.addAttribute("errMst", errMsg);
         }
         
         return "redirect:locations";
     }
 
     @GetMapping("/deleteLocation")
-    public String deleteLocation(@RequestParam("locationId") int locationId) {
+    public String deleteLocation(@RequestParam("locationId") int locationId, 
+            Model model) {
+        
         try {
             service.deleteLocationById(locationId);
         } catch (SuperBeingPersistenceException e) {
-            JOptionPane.showMessageDialog(null, "Location is tied to an organiztion.\n"
-                    + "Unable to delete.");
+            String errMsg = "Location is tied to an organiztion. Unable to delete.";
+            model.addAttribute("errMsg", errMsg);
         }
         
         return "redirect:locations";
@@ -490,7 +522,8 @@ public class SuperSightingsController {
             Location location = service.getLocationById(locationId);
             model.addAttribute("location", location);
         } catch (SuperBeingPersistenceException e) {
-            JOptionPane.showMessageDialog(null, "Error displayEditLocation.");
+            String errMsg = "Error loading edit location form.";
+            model.addAttribute("errMsg", errMsg);
         }
         
         return "editLocationForm";
@@ -510,7 +543,8 @@ public class SuperSightingsController {
         try {
             service.updateLocation(location);
         } catch (SuperBeingPersistenceException e) {
-            JOptionPane.showMessageDialog(null, "Error editLocation.");
+            String errMsg = "Unable to edit location.";
+            model.addAttribute("errMsg", errMsg);
         }
         
         return "redirect:locations";
@@ -526,7 +560,8 @@ public class SuperSightingsController {
             model.addAttribute("superList", superList);
             model.addAttribute("locationList", locationList);
         } catch (SuperBeingPersistenceException e) {
-            JOptionPane.showMessageDialog(null, "Error displaySightingsPage.");
+            String errMsg = "Error loading sightings page.";
+            model.addAttribute("errMsg", errMsg);
         }
         
         return "sightings";
@@ -536,11 +571,13 @@ public class SuperSightingsController {
     public String displaySightingDetails(
             @RequestParam("sightingId") int sightingId, 
             Model model) {
+        
         try {
             Sighting sighting = service.getSightingById(sightingId);
             model.addAttribute("sighting", sighting);
         } catch (SuperBeingPersistenceException e) {
-            JOptionPane.showMessageDialog(null, "Error displaySightingDetails.");
+            String errMsg = "Error displaying sighting details.";
+            model.addAttribute("errMsg", errMsg);
         }
         
         return "sightingDetails";
@@ -579,19 +616,25 @@ public class SuperSightingsController {
 
             service.addSighting(sighting);
         } catch (SuperBeingPersistenceException e) {
-            JOptionPane.showMessageDialog(null, "Error createSighting.");
+            String errMsg = "Error. Unable to create sighting.";
+            model.addAttribute("errMsg", errMsg);
         }
         
         return "redirect:sightings";
     }
     
     @GetMapping("/deleteSighting")
-    public String deleteSighting(@RequestParam("sightingId") int id) {
+    public String deleteSighting(
+            @RequestParam("sightingId") int id, 
+            Model model) {
+        
         try {
             service.deleteSighting(id);
         } catch (SuperBeingPersistenceException e) {
-            JOptionPane.showMessageDialog(null, "Error deleteSighting.");
+            String errMsg = "Unable to delete sighting.";
+            model.addAttribute("errMsg", errMsg);
         }
+        
         return "redirect:sightings";
     }
     
@@ -608,7 +651,8 @@ public class SuperSightingsController {
             model.addAttribute("locationList", locationList);
             model.addAttribute("superList", superList);
         } catch (SuperBeingPersistenceException e) {
-            JOptionPane.showMessageDialog(null, "Error displaySightingForm.");
+            String errMsg = "Error displaying edit sighting form.";
+            model.addAttribute("errMsg", errMsg);
         }
         
         return "editSightingForm";
@@ -644,23 +688,26 @@ public class SuperSightingsController {
             sighting.setDate(newDate);
 
             service.updateSighting(sighting);
+            
         } catch (SuperBeingPersistenceException e) {
-            JOptionPane.showMessageDialog(null, "Error editSighting.");
+            String errMsg = "Error updating sighting. Changes not saved.";
+            model.addAttribute("errMsg", errMsg);
         }
-        
         
         return "redirect:sightings";
     }
 
     @PostMapping("/createPower")
     public String createPower(
-            @RequestParam("power-description") String description) {
+            @RequestParam("power-description") String description, 
+            Model model) {
         
         try {
             Power power = new Power(description);
             service.addPower(power);
         } catch (SuperBeingPersistenceException e) {
-            JOptionPane.showMessageDialog(null, "Error createPower.");
+            String errMsg = "Error creating power.";
+            model.addAttribute("errMsg", errMsg);
         }
         
         return "redirect:supers";
